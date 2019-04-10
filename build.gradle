@@ -1,0 +1,68 @@
+plugins {
+    id 'groovy'
+    id 'org.asciidoctor.convert' version '1.5.3'
+    id 'org.springframework.boot' version '2.1.4.RELEASE'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'us.vanderlugt.sample'
+version = '0.0.1'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', 'Greenwich.SR1')
+    set('snippetsDir', "${project.buildDir}/snippets")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.liquibase:liquibase-core'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    implementation 'org.hibernate:hibernate-envers'
+    runtime 'org.glassfish.jaxb:jaxb-runtime'
+//    implementation 'org.hibernate:hibernate-ehcache'
+//    implementation 'javax.xml.bind:jaxb-api'
+//    implementation 'javax.activation:activation:1.1.1'
+//    implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
+
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.codehaus.groovy:groovy-all:2.5.6'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testRuntime 'com.h2database:h2'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}

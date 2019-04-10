@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: setup_hibernate_envers
+      author: mvanderlugt@live.com
+      changes:
+        - createTable:
+            tableName: revinfo
+            columns:
+              - column:
+                  name: rev
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: revtstmp
+                  type: BIGINT
+  - changeSet:
+      id: create_user_table
+      author: mvanderlugt@live.com
+      changes:
+        - createTable:
+            tableName: user_account
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR(100)
+              - column:
+                  name: first_name
+                  type: VARCHAR(50)
+              - column:
+                  name: last_name
+                  type: VARCHAR(100)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+        - sql:
+            sql: >-
+              CREATE TABLE user_account_audit AS (
+                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                FROM user_account
+              ) WITH NO DATA;
