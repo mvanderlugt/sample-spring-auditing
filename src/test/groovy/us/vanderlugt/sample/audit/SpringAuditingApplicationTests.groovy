@@ -31,13 +31,12 @@ class SpringAuditingApplicationTests {
     @BeforeEach
     void setup(WebApplicationContext context) {
         mvc = webAppContextSetup(context)
-                .defaultRequest(get("/")
+                .defaultRequest(get('/')
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .alwaysDo(print())
                 .build()
     }
-
 
     @Test
     void createUser() throws Exception {
@@ -48,7 +47,7 @@ class SpringAuditingApplicationTests {
                 lastName : 'Vander Lugt',
                 email    : 'mvanderlugt@live.com'
         ]
-        mvc.perform(post("/user")
+        mvc.perform(post('/user')
                 .content(toJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath('id').exists())
@@ -63,6 +62,92 @@ class SpringAuditingApplicationTests {
     }
 
     @Test
+    void getUser() throws Exception {
+        def request = [
+                username : 'mvanderlugt',
+                password : 'Password1',
+                firstName: 'Mark',
+                lastName : 'Vander Lugt',
+                email    : 'mvanderlugt@live.com'
+        ]
+        def user = parseJson(
+                mvc.perform(post('/user')
+                        .content(toJson(request)))
+                        .andReturn())
+
+        mvc.perform(get('/user/{id}', user.id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('deleted').doesNotExist())
+                .andExpect(jsonPath('username', is('mvanderlugt')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Mark')))
+                .andExpect(jsonPath('lastName', is('Vander Lugt')))
+                .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
+    }
+
+    @Test
+    void updateUser() throws Exception {
+        def request = [
+                username : 'mvanderlugt',
+                password : 'Password1',
+                firstName: 'Mark',
+                lastName : 'Vander Lugt',
+                email    : 'mvanderlugt@live.com'
+        ]
+        def user = parseJson(
+                mvc.perform(post('/user')
+                        .content(toJson(request)))
+                        .andReturn())
+
+        mvc.perform(get('/user/{id}', user.id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('deleted').doesNotExist())
+                .andExpect(jsonPath('username', is('mvanderlugt')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Mark')))
+                .andExpect(jsonPath('lastName', is('Vander Lugt')))
+                .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
+
+        def update = [
+                username : 'bboucher',
+                password : 'Password12345',
+                firstName: 'Bobby',
+                lastName : 'Boucher',
+                email    : 'bobby@boucher.com'
+        ]
+
+        mvc.perform(put('/user/{id}', user.id)
+                .content(toJson(update)))
+                .andExpect(jsonPath('id', is(user.id)))
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('deleted').doesNotExist())
+                .andExpect(jsonPath('username', is('bboucher')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Bobby')))
+                .andExpect(jsonPath('lastName', is('Boucher')))
+                .andExpect(jsonPath('email', is('bobby@boucher.com')))
+
+        mvc.perform(get('/user/{id}', user.id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('deleted').doesNotExist())
+                .andExpect(jsonPath('username', is('bboucher')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Bobby')))
+                .andExpect(jsonPath('lastName', is('Boucher')))
+                .andExpect(jsonPath('email', is('bobby@boucher.com')))
+    }
+
+    @Test
     void deleteUser() throws Exception {
         def request = [
                 username : 'mvanderlugt',
@@ -72,13 +157,28 @@ class SpringAuditingApplicationTests {
                 email    : 'mvanderlugt@live.com'
         ]
         def user = parseJson(
-                mvc.perform(post("/user")
+                mvc.perform(post('/user')
                         .content(toJson(request)))
                         .andExpect(status().isCreated())
                         .andReturn())
 
-        mvc.perform(delete("/user/{id}", user.id))
+        mvc.perform(get('/user/{id}', user.id))
                 .andExpect(status().isOk())
+
+        mvc.perform(delete('/user/{id}', user.id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('deleted').doesNotExist())
+                .andExpect(jsonPath('username', is('mvanderlugt')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Mark')))
+                .andExpect(jsonPath('lastName', is('Vander Lugt')))
+                .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
+
+        mvc.perform(get('/user/{id}', user.id))
+                .andExpect(status().isNotFound())
     }
 
     def parseJson(MvcResult mvcResult) {

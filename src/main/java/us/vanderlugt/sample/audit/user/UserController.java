@@ -2,16 +2,18 @@ package us.vanderlugt.sample.audit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import us.vanderlugt.sample.audit.common.NotFoundResponse;
 
 import javax.validation.Valid;
-
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @Validated
@@ -19,16 +21,41 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-    @Autowired
     private final UserRepository repository;
-    @Autowired
-    private final PasswordEncoder passwordEncoder;
+    private final UserAccountMapper mapper;
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public UserAccount createUserAccount(@Valid @RequestBody UserAccount userAccount) {
-        userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
-        return repository.save(userAccount);
+    public UserAccount createUserAccount(@Valid @RequestBody NewUserAccount newAccount) {
+        return repository.save(mapper.create(newAccount));
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(OK)
+    public UserAccount getUserAccount(@PathVariable("id") UUID id, @PathVariable("id") UserAccount userAccount) {
+        if (userAccount != null) {
+            return userAccount;
+        } else {
+            throw new NotFoundResponse(UserAccount.class, id);
+        }
+    }
+
+    @GetMapping
+    @ResponseStatus(OK)
+    public Page<UserAccount> getUserAccounts(@PageableDefault Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @PutMapping("/{id}")
+    public UserAccount updateUserAccount(@PathVariable("id") UUID id,
+                                         @PathVariable("id") UserAccount existing,
+                                         @RequestBody UserAccountUpdate update) {
+        if (existing != null) {
+            mapper.apply(update, existing);
+            return repository.save(existing);
+        } else {
+            throw new NotFoundResponse(UserAccount.class, id);
+        }
     }
 
     @DeleteMapping("/{id}")
