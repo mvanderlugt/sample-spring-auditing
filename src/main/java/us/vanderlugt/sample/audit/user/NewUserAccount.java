@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class NewUserAccount {
+class NewUserAccount {
     @NotNull
     @Size(min = 1, max = 100)
     private String username;

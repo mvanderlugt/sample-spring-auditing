@@ -9,10 +9,10 @@ import us.vanderlugt.sample.audit.common.Password;
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", uses = CustomMapping.class, unmappedTargetPolicy = IGNORE)
-public interface UserAccountMapper {
+interface UserAccountMapper {
     @Mapping(source = "password", target = "password", qualifiedBy = Password.class)
     UserAccount create(NewUserAccount newAccount);
 
     @Mapping(source = "password", target = "password", qualifiedBy = Password.class)
-    void apply(UserAccountUpdate update, @MappingTarget UserAccount userAccount);
+    void apply(UpdateUserAccount update, @MappingTarget UserAccount userAccount);
 }

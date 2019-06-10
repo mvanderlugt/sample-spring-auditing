@@ -1,0 +1,21 @@
+= Spring Auditing Sample Documentation
+Mark Vander Lugt<mvanderlugt@live.com>
+{version} {buildDate}
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== User Accounts
+include::{snippets}/user-tests/get-users/auto-section.adoc[]
+
+include::{snippets}/user-tests/create-user/auto-section.adoc[]
+
+include::{snippets}/user-tests/get-user/auto-section.adoc[]
+
+include::{snippets}/user-tests/update-user/auto-section.adoc[]
+
+include::{snippets}/user-tests/delete-user/auto-section.adoc[]
+
+include::{snippets}/user-tests/audit-user/auto-section.adoc[]

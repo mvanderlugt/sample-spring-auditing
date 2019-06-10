@@ -4,12 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import us.vanderlugt.sample.audit.common.BaseEntity;
-import us.vanderlugt.sample.audit.common.CustomMapping;
-import us.vanderlugt.sample.audit.common.Password;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.Email;
@@ -34,5 +29,4 @@ public class UserAccount extends BaseEntity {
     private String lastName;
     @Email
     private String email;
-
 }

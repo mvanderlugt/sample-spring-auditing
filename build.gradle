@@ -1,3 +1,5 @@
+import java.time.LocalDate
+
 plugins {
     id 'groovy'
     id 'org.asciidoctor.convert' version '1.5.3'
@@ -14,6 +16,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    jsondoclet
 }
 
 repositories {
@@ -22,10 +25,16 @@ repositories {
 
 ext {
     set('springCloudVersion', 'Greenwich.SR1')
-    set('snippetsDir', "${project.buildDir}/snippets")
+    set('javadocJsonDir', file("${project.buildDir}/generated-javadoc-json"))
+    set('snippetsDir', "${project.buildDir}/generated-snippets")
 }
 
 dependencies {
+    compileOnly 'org.mapstruct:mapstruct:1.3.0.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.3.0.Final'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -33,24 +42,26 @@ dependencies {
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    implementation 'org.springframework.data:spring-data-envers'
     implementation 'org.hibernate:hibernate-envers'
-    runtime 'org.glassfish.jaxb:jaxb-runtime'
-//    implementation 'org.hibernate:hibernate-ehcache'
-//    implementation 'javax.xml.bind:jaxb-api'
-//    implementation 'javax.activation:activation:1.1.1'
-//    implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
-    compileOnly     'org.mapstruct:mapstruct:1.3.0.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.3.0.Final'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql'
+
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime'
+    runtimeOnly 'com.h2database:h2'
+//    runtimeOnly 'org.postgresql:postgresql'
+
+    jsondoclet 'capital.scalable:spring-auto-restdocs-json-doclet-jdk9:2.0.5'
+
     testImplementation 'org.codehaus.groovy:groovy-all:2.5.6'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'capital.scalable:spring-auto-restdocs-core:2.0.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
-    testRuntime 'com.h2database:h2'
+
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+//    testRuntimeOnly 'com.h2database:h2'
 }
 
 dependencyManagement {
@@ -59,12 +70,45 @@ dependencyManagement {
     }
 }
 
+task jsonDoclet(type: Javadoc, dependsOn: compileJava) {
+    options.encoding = 'UTF-8'
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath
+    destinationDir = javadocJsonDir
+    options.docletpath = configurations.jsondoclet.files.asType(List)
+    options.doclet = 'capital.scalable.restdocs.jsondoclet.ExtractDocumentationAsJsonDoclet'
+    options.memberLevel = JavadocMemberLevel.PACKAGE
+}
+
 test {
     useJUnitPlatform()
     outputs.dir snippetsDir
+    dependsOn jsonDoclet
+    systemProperty 'org.springframework.restdocs.outputDir', snippetsDir
+    systemProperty 'org.springframework.restdocs.javadocJsonDir', javadocJsonDir
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
 }
 
 asciidoctor {
-    inputs.dir snippetsDir
     dependsOn test
+    options.encoding = 'UTF-8'
+    attributes = [
+            snippets : snippetsDir,
+            version  : project.version,
+            buildDate: LocalDate.now().format("MM/dd/yyyy")
+    ]
+}
+
+jar {
+    dependsOn asciidoctor
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
 }

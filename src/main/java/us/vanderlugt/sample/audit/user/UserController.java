@@ -1,5 +1,9 @@
 package us.vanderlugt.sample.audit.user;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import us.vanderlugt.sample.audit.common.NotFoundResponse;
 
 import javax.validation.Valid;
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -24,6 +30,9 @@ public class UserController {
     private final UserRepository repository;
     private final UserAccountMapper mapper;
 
+    /**
+     * Create a new user account.
+     */
     @PostMapping
     @ResponseStatus(CREATED)
     public UserAccount createUserAccount(@Valid @RequestBody NewUserAccount newAccount) {
@@ -49,7 +58,7 @@ public class UserController {
     @PutMapping("/{id}")
     public UserAccount updateUserAccount(@PathVariable("id") UUID id,
                                          @PathVariable("id") UserAccount existing,
-                                         @RequestBody UserAccountUpdate update) {
+                                         @RequestBody UpdateUserAccount update) {
         if (existing != null) {
             mapper.apply(update, existing);
             return repository.save(existing);
@@ -63,5 +72,22 @@ public class UserController {
     public UserAccount deleteUserAccount(@PathVariable("id") UserAccount userAccount) {
         repository.delete(userAccount);
         return userAccount;
+    }
+
+    @GetMapping("/{id}/audit")
+    @ResponseStatus(OK)
+    public Page<AuditRecord<UserAccount>> getUserAuditHistory(@PathVariable("id") UserAccount userAccount, @PageableDefault Pageable pageable) {
+        return repository.findRevisions(userAccount.getId(), pageable)
+                .map(rev -> new AuditRecord<>(rev.getRevisionNumber(), rev.getRevisionInstant(), rev.getEntity()));
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonPropertyOrder({"id", "instant", "entity"})
+    public static class AuditRecord<T> {
+        private Optional<Integer> id;
+        private Optional<Instant> instant;
+        private T entity;
     }
 }

@@ -1,0 +1,34 @@
+POST {{host}}/user
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "mvanderlugt",
+  "password": "Password1",
+  "firstName": "Mark",
+  "lastName": "Vander Lugt",
+  "email": "mvanderlugt@live.com"
+}
+
+###
+GET {{host}}/user/{{user_id}}
+Accept: application/json
+
+###
+PUT {{host}}/user/{{user_id}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "markv",
+  "password": "Password5",
+  "firstName": "Mark",
+  "lastName": "Vander Lugt",
+  "email": "mvanderlugt1@gmail.com"
+}
+
+###
+GET {{host}}/user/{{user_id}}/audit
+Accept: application/json
+
+###
