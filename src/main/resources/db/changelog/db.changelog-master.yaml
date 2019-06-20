@@ -62,3 +62,38 @@ databaseChangeLog:
                 SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
                 FROM user_account
               ) WITH NO DATA;
+  - changeSet:
+      id: create_access_role
+      author: mvanderlugt@live.com
+      changes:
+        - createTable:
+            tableName: access_role
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+        - sql:
+            sql: >-
+              CREATE TABLE access_role_audit AS (
+                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                FROM user_account
+              ) WITH NO DATA;

@@ -1,9 +1,5 @@
 package us.vanderlugt.sample.audit.user;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -11,11 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import us.vanderlugt.sample.audit.common.AuditRecord;
 import us.vanderlugt.sample.audit.common.NotFoundResponse;
 
 import javax.validation.Valid;
-import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -81,13 +76,5 @@ public class UserController {
                 .map(rev -> new AuditRecord<>(rev.getRevisionNumber(), rev.getRevisionInstant(), rev.getEntity()));
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonPropertyOrder({"id", "instant", "entity"})
-    public static class AuditRecord<T> {
-        private Optional<Integer> id;
-        private Optional<Instant> instant;
-        private T entity;
-    }
+
 }
