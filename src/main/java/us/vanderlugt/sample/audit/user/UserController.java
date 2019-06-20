@@ -75,6 +75,4 @@ public class UserController {
         return repository.findRevisions(userAccount.getId(), pageable)
                 .map(rev -> new AuditRecord<>(rev.getRevisionNumber(), rev.getRevisionInstant(), rev.getEntity()));
     }
-
-
 }
