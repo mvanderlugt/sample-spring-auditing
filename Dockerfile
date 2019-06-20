@@ -1,7 +1,7 @@
 FROM gradle:5.4-jdk11 as builder
 COPY --chown=gradle:gradle . /home/gradle
 WORKDIR /home/gradle
-RUN gradle clean build
+RUN gradle --no-daemon clean build
 
 FROM openjdk:11-jdk-stretch
 RUN mkdir -p /app/logs/
