@@ -95,5 +95,99 @@ databaseChangeLog:
             sql: >-
               CREATE TABLE access_role_audit AS (
                 SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM user_account
+                FROM access_role
+              ) WITH NO DATA;
+  - changeSet:
+      id: create_user_account_access_roles
+      author: mvanderlugt@live.com
+      changes:
+        - createTable:
+            tableName: user_account_access_roles
+            columns:
+              - column:
+                  name: user_account_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: user_account_access_roles_user_account_fkey
+                    references: user_account(id)
+              - column:
+                  name: access_role_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: user_account_access_roles_access_role_fkey
+                    references: access_role(id)
+        - sql:
+            sql: >-
+              CREATE TABLE user_account_access_roles_audit AS (
+                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                FROM user_account_access_roles
+              ) WITH NO DATA;
+  - changeSet:
+      id: create_permission
+      author: mvanderlugt@live.com
+      changes:
+        - createTable:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+        - sql:
+            sql: >-
+              CREATE TABLE permission_audit AS (
+                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                FROM permission
+              ) WITH NO DATA;
+  - changeSet:
+      id: create_access_role_permissions
+      author: mvanderlugt@live.com
+      changes:
+        - createTable:
+            tableName: access_role_permissions
+            columns:
+              - column:
+                  name: access_role_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: access_role_permissions_access_role_fkey
+                    references: access_role(id)
+              - column:
+                  name: permission_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: access_role_permissions_permission_fkey
+                    references: permission(id)
+        - sql:
+            sql: >-
+              CREATE TABLE access_role_permissions_audit AS (
+                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                FROM access_role_permissions
               ) WITH NO DATA;
