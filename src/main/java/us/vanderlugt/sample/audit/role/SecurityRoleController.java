@@ -22,22 +22,22 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/role")
 @RequiredArgsConstructor
-public class AccessRoleController {
-    private final RoleRepository repository;
-    private final AccessRoleMapper mapper;
+public class SecurityRoleController {
+    private final SecurityRoleRepository repository;
+    private final SecurityRoleMapper mapper;
 
     /**
      * Create a new user account.
      */
     @PostMapping
     @ResponseStatus(CREATED)
-    public AccessRole createAccessRole(@Valid @RequestBody NewAccessRole newRole) {
+    public SecurityRole createSecurityRole(@Valid @RequestBody NewSecurityRole newRole) {
         return repository.save(mapper.create(newRole));
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(OK)
-    public AccessRole getAccessRole(@PathVariable("id") UUID id, @PathVariable("id") AccessRole role) {
+    public SecurityRole getSecurityRole(@PathVariable("id") UUID id, @PathVariable("id") SecurityRole role) {
         if (role != null) {
             return role;
         } else {
@@ -47,14 +47,14 @@ public class AccessRoleController {
 
     @GetMapping
     @ResponseStatus(OK)
-    public Page<AccessRole> getAccessRoles(@PageableDefault Pageable pageable) {
+    public Page<SecurityRole> getSecurityRoles(@PageableDefault Pageable pageable) {
         return repository.findAll(pageable);
     }
 
     @PutMapping("/{id}")
-    public AccessRole updateUserAccount(@PathVariable("id") UUID id,
-                                        @PathVariable("id") AccessRole existing,
-                                        @RequestBody UpdateAccessRole update) {
+    public SecurityRole updateSecurityRole(@PathVariable("id") UUID id,
+                                          @PathVariable("id") SecurityRole existing,
+                                          @RequestBody UpdateSecurityRole update) {
         if (existing != null) {
             mapper.apply(update, existing);
             return repository.save(existing);
@@ -65,14 +65,14 @@ public class AccessRoleController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(OK)
-    public AccessRole deleteUserAccount(@PathVariable("id") AccessRole role) {
+    public SecurityRole deleteSecurityRole(@PathVariable("id") SecurityRole role) {
         repository.delete(role);
         return role;
     }
 
     @GetMapping("/{id}/audit")
     @ResponseStatus(OK)
-    public Page<AuditRecord<AccessRole>> getUserAuditHistory(@PathVariable("id") AccessRole role, @PageableDefault Pageable pageable) {
+    public Page<AuditRecord<SecurityRole>> getSecurityRoleAuditHistory(@PathVariable("id") SecurityRole role, @PageableDefault Pageable pageable) {
         return repository.findRevisions(role.getId(), pageable)
                 .map(rev -> new AuditRecord<>(rev.getRevisionNumber(), rev.getRevisionInstant(), rev.getEntity()));
     }

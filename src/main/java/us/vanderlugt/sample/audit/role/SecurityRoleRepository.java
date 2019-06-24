@@ -6,6 +6,6 @@ import org.springframework.data.repository.history.RevisionRepository;
 import java.util.Set;
 import java.util.UUID;
 
-public interface RoleRepository  extends PagingAndSortingRepository<AccessRole, UUID>, RevisionRepository<AccessRole, UUID, Integer> {
-    Set<AccessRole> findAllById(Iterable<UUID> ids);
+public interface SecurityRoleRepository extends PagingAndSortingRepository<SecurityRole, UUID>, RevisionRepository<SecurityRole, UUID, Integer> {
+    Set<SecurityRole> findAllById(Iterable<UUID> ids);
 }

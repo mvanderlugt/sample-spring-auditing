@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import us.vanderlugt.sample.audit.common.NotFoundResponse;
-import us.vanderlugt.sample.audit.role.AccessRole;
-import us.vanderlugt.sample.audit.role.RoleRepository;
+import us.vanderlugt.sample.audit.role.SecurityRole;
+import us.vanderlugt.sample.audit.role.SecurityRoleRepository;
 
 import java.util.Collection;
 import java.util.Set;
@@ -21,22 +21,22 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class UserRolesController {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final SecurityRoleRepository roleRepository;
 
     @GetMapping
     @ResponseStatus(OK)
-    public Collection<AccessRole> getUserRoles(@PathVariable("userId") UserAccount user) {
+    public Collection<SecurityRole> getUserRoles(@PathVariable("userId") UserAccount user) {
         return user.getRoles();
     }
 
     @PostMapping
     @ResponseStatus(OK)
-    public Collection<AccessRole> addRoleToUser(@PathVariable("userId") UserAccount user, @RequestBody UUID roleId) {
-        AccessRole role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new NotFoundResponse(AccessRole.class, roleId));
+    public Collection<SecurityRole> addRoleToUser(@PathVariable("userId") UserAccount user, @RequestBody UUID roleId) {
+        SecurityRole role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new NotFoundResponse(SecurityRole.class, roleId));
         if (user.add(role)) {
             log.debug("Adding role {} to user {}", role.getName(), user.getUsername());
-            userRepository.save(user);
+            user = userRepository.save(user);
         } else {
             log.debug("User {} already has role {}", user.getUsername(), role.getName());
         }
@@ -45,10 +45,10 @@ public class UserRolesController {
 
     @DeleteMapping("/{roleId}")
     @ResponseStatus(OK)
-    public Collection<AccessRole> removeRoleFromUser(@PathVariable("userId") UserAccount user, @PathVariable("roleId") AccessRole role) {
+    public Collection<SecurityRole> removeRoleFromUser(@PathVariable("userId") UserAccount user, @PathVariable("roleId") SecurityRole role) {
         if (user.getRoles().contains(role)) {
             user.remove(role);
-            userRepository.save(user);
+            user = userRepository.save(user);
         } else {
             throw new NotFoundResponse("role", role.getId());
         }
@@ -57,12 +57,12 @@ public class UserRolesController {
 
     @PutMapping
     @ResponseStatus(OK)
-    public Collection<AccessRole> setUserRoles(@PathVariable("userId") UserAccount user, @RequestBody Set<UUID> roleIds) {
-        Set<AccessRole> roles = roleRepository.findAllById(roleIds);
+    public Collection<SecurityRole> setUserRoles(@PathVariable("userId") UserAccount user, @RequestBody Set<UUID> roleIds) {
+        Set<SecurityRole> roles = roleRepository.findAllById(roleIds);
         //todo what does this do if some aren't found?
         log.debug("Updating user {} to have {} roles", user.getUsername(), roles.size());
         user.setRoles(roles);
-        userRepository.save(user);
+        user = userRepository.save(user);
         return user.getRoles();
     }
 }

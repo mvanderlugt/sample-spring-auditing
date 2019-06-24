@@ -5,5 +5,5 @@ import org.springframework.data.repository.history.RevisionRepository;
 
 import java.util.UUID;
 
-public interface PermissionRepository extends PagingAndSortingRepository<Permission, UUID>, RevisionRepository<Permission, UUID, Integer> {
+public interface AccessRuleRepository extends PagingAndSortingRepository<AccessRule, UUID>, RevisionRepository<AccessRule, UUID, Integer> {
 }

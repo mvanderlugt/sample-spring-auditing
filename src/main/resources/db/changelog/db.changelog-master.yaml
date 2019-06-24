@@ -63,11 +63,11 @@ databaseChangeLog:
                 FROM user_account
               ) WITH NO DATA;
   - changeSet:
-      id: create_access_role
+      id: create_security_role
       author: mvanderlugt@live.com
       changes:
         - createTable:
-            tableName: access_role
+            tableName: security_role
             columns:
               - column:
                   name: id
@@ -93,43 +93,43 @@ databaseChangeLog:
                     nullable: false
         - sql:
             sql: >-
-              CREATE TABLE access_role_audit AS (
+              CREATE TABLE security_role_audit AS (
                 SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM access_role
+                FROM security_role
               ) WITH NO DATA;
   - changeSet:
-      id: create_user_account_access_roles
+      id: create_user_account_security_roles
       author: mvanderlugt@live.com
       changes:
         - createTable:
-            tableName: user_account_access_roles
+            tableName: user_account_security_roles
             columns:
               - column:
                   name: user_account_id
                   type: UUID
                   constraints:
                     primaryKey: true
-                    foreignKeyName: user_account_access_roles_user_account_fkey
+                    foreignKeyName: user_account_security_roles_user_account_fkey
                     references: user_account(id)
               - column:
-                  name: access_role_id
+                  name: security_role_id
                   type: UUID
                   constraints:
                     primaryKey: true
-                    foreignKeyName: user_account_access_roles_access_role_fkey
-                    references: access_role(id)
+                    foreignKeyName: user_account_security_roles_security_role_fkey
+                    references: security_role(id)
         - sql:
             sql: >-
-              CREATE TABLE user_account_access_roles_audit AS (
+              CREATE TABLE user_account_security_roles_audit AS (
                 SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM user_account_access_roles
+                FROM user_account_security_roles
               ) WITH NO DATA;
   - changeSet:
-      id: create_permission
+      id: create_access_rule
       author: mvanderlugt@live.com
       changes:
         - createTable:
-            tableName: permission
+            tableName: access_rule
             columns:
               - column:
                   name: id
@@ -149,45 +149,33 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: role_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: access_rule_security_role_fkey
+                    references: security_role(id)
+              - column:
                   name: name
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
               - column:
-                  name: code
-                  type: VARCHAR(100)
+                  name: description
+                  type: VARCHAR(500)
+              - column:
+                  name: target
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rule
+                  type: TEXT
                   constraints:
                     nullable: false
         - sql:
             sql: >-
-              CREATE TABLE permission_audit AS (
+              CREATE TABLE access_rule_audit AS (
                 SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM permission
-              ) WITH NO DATA;
-  - changeSet:
-      id: create_access_role_permissions
-      author: mvanderlugt@live.com
-      changes:
-        - createTable:
-            tableName: access_role_permissions
-            columns:
-              - column:
-                  name: access_role_id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-                    foreignKeyName: access_role_permissions_access_role_fkey
-                    references: access_role(id)
-              - column:
-                  name: permission_id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-                    foreignKeyName: access_role_permissions_permission_fkey
-                    references: permission(id)
-        - sql:
-            sql: >-
-              CREATE TABLE access_role_permissions_audit AS (
-                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM access_role_permissions
+                FROM access_rule
               ) WITH NO DATA;

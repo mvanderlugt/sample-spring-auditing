@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
 import us.vanderlugt.sample.audit.common.BaseEntity;
-import us.vanderlugt.sample.audit.role.AccessRole;
+import us.vanderlugt.sample.audit.role.SecurityRole;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -34,19 +34,19 @@ public class UserAccount extends BaseEntity {
     @JsonIgnore
     @Size(max = 20)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "user_account_access_roles",
+    @JoinTable(name = "user_account_security_roles",
             joinColumns = @JoinColumn(
                     name = "user_account_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
-                    name = "access_role_id", referencedColumnName = "id"))
-    private Set<AccessRole> roles = new HashSet<>();
+                    name = "security_role_id", referencedColumnName = "id"))
+    private Set<SecurityRole> roles = new HashSet<>();
 
 
-    public Set<AccessRole> getRoles() {
+    public Set<SecurityRole> getRoles() {
         return Collections.unmodifiableSet(roles);
     }
 
-    public void setRoles(Set<AccessRole> roles) {
+    public void setRoles(Set<SecurityRole> roles) {
         if(roles != null) {
             this.roles = new HashSet<>(roles);
         } else {
@@ -54,17 +54,17 @@ public class UserAccount extends BaseEntity {
         }
     }
 
-    public boolean add(AccessRole role) {
+    public boolean add(SecurityRole role) {
         return roles.add(role);
     }
 
-    public Optional<AccessRole> findRole(UUID roleId) {
+    public Optional<SecurityRole> findRole(UUID roleId) {
         return getRoles().stream()
                 .filter(r -> r.getId().equals(roleId))
                 .findFirst();
     }
 
-    public boolean remove(AccessRole role) {
+    public boolean remove(SecurityRole role) {
         return roles.remove(role);
     }
 }

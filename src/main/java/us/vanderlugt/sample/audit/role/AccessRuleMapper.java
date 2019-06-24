@@ -6,8 +6,8 @@ import org.mapstruct.MappingTarget;
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
-interface AccessRoleMapper {
-    AccessRole create(NewAccessRole newRole);
+interface AccessRuleMapper {
+    AccessRule create(NewAccessRule newRule);
 
-    void apply(UpdateAccessRole update, @MappingTarget AccessRole role);
+    void apply(UpdateAccessRule update, @MappingTarget AccessRule role);
 }

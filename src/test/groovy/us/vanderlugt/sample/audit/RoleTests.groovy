@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RoleTests extends BaseTest {
     @Test
     @Transactional
-    void createAccessRole() throws Exception {
+    void createSecurityRole() throws Exception {
         def request = [
                 name: 'Administrator'
         ]
@@ -37,7 +37,7 @@ class RoleTests extends BaseTest {
 
     @Test
     @Transactional
-    void getAccessRole() throws Exception {
+    void getSecurityRole() throws Exception {
         def request = [
                 name: 'Administrator'
         ]
@@ -57,14 +57,14 @@ class RoleTests extends BaseTest {
     }
 
     @Test
-    void getNoAccessRoles() throws Exception {
+    void getNoSecurityRoles() throws Exception {
         mvc.perform(get('/role'))
            .andExpect(status().isNoContent())
     }
 
     @Test
     @Transactional
-    void getAccessRoles() throws Exception {
+    void getSecurityRoles() throws Exception {
         [
                 [name: 'Administrator'],
                 [name: 'Manager']
@@ -90,7 +90,7 @@ class RoleTests extends BaseTest {
 
     @Test
     @Transactional
-    void updateAccessRole() throws Exception {
+    void updateSecurityRole() throws Exception {
         def request = [
                 name: 'Admin'
         ]
@@ -128,7 +128,7 @@ class RoleTests extends BaseTest {
 
     @Test
     @Transactional
-    void deleteAccessRole() throws Exception {
+    void deleteSecurityRole() throws Exception {
         def request = [
                 name: 'Administrator'
         ]
@@ -156,7 +156,7 @@ class RoleTests extends BaseTest {
     @Test
     @DirtiesContext
     // envers writes data when the transaction closes, instead of rolling back flush the context afterwards to reset the database
-    void auditAccessRole() throws Exception {
+    void auditSecurityRole() throws Exception {
         def request = [
                 name: 'Admin'
         ]

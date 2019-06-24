@@ -20,18 +20,27 @@ include::{snippets}/user-tests/delete-user/auto-section.adoc[]
 
 include::{snippets}/user-tests/audit-user/auto-section.adoc[]
 
-== Access Roles
-include::{snippets}/role-tests/get-access-roles/auto-section.adoc[]
+== Security Roles
+include::{snippets}/role-tests/get-security-roles/auto-section.adoc[]
 
-include::{snippets}/role-tests/create-access-role/auto-section.adoc[]
+include::{snippets}/role-tests/create-security-role/auto-section.adoc[]
 
-include::{snippets}/role-tests/get-access-role/auto-section.adoc[]
+include::{snippets}/role-tests/get-security-role/auto-section.adoc[]
 
-include::{snippets}/role-tests/update-access-role/auto-section.adoc[]
+include::{snippets}/role-tests/update-security-role/auto-section.adoc[]
 
-include::{snippets}/role-tests/delete-access-role/auto-section.adoc[]
+include::{snippets}/role-tests/delete-security-role/auto-section.adoc[]
 
-include::{snippets}/role-tests/audit-access-role/auto-section.adoc[]
+include::{snippets}/role-tests/audit-security-role/auto-section.adoc[]
+
+== Access Rules
+include::{snippets}/access-rule-tests/get-access-rules/auto-section.adoc[]
+
+include::{snippets}/access-rule-tests/create-access-rule/auto-section.adoc[]
+
+include::{snippets}/access-rule-tests/update-access-rule/auto-section.adoc[]
+
+include::{snippets}/access-rule-tests/delete-access-rule/auto-section.adoc[]
 
 == User Roles
 include::{snippets}/user-roles-tests/get-user-access-roles/auto-section.adoc[]

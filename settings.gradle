@@ -3,4 +3,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'spring-auditing'
+rootProject.name = 'sample-spring-auditing'
