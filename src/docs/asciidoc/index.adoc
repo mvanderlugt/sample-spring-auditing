@@ -1,5 +1,5 @@
 = Spring Auditing Sample Documentation
-Mark Vander Lugt<mvanderlugt@live.com>
+Mark Vander Lugt <mvanderlugt@live.com>
 {version} {buildDate}
 :doctype: book
 :icons: font
@@ -8,30 +8,30 @@ Mark Vander Lugt<mvanderlugt@live.com>
 :toclevels: 2
 
 == User Accounts
-include::{snippets}/user-tests/get-users/auto-section.adoc[]
+include::{snippets}/user-account-tests/get-users/auto-section.adoc[]
 
-include::{snippets}/user-tests/create-user/auto-section.adoc[]
+include::{snippets}/user-account-tests/create-user/auto-section.adoc[]
 
-include::{snippets}/user-tests/get-user/auto-section.adoc[]
+include::{snippets}/user-account-tests/get-user/auto-section.adoc[]
 
-include::{snippets}/user-tests/update-user/auto-section.adoc[]
+include::{snippets}/user-account-tests/update-user/auto-section.adoc[]
 
-include::{snippets}/user-tests/delete-user/auto-section.adoc[]
+include::{snippets}/user-account-tests/delete-user/auto-section.adoc[]
 
-include::{snippets}/user-tests/audit-user/auto-section.adoc[]
+include::{snippets}/user-account-tests/audit-user/auto-section.adoc[]
 
 == Security Roles
-include::{snippets}/role-tests/get-security-roles/auto-section.adoc[]
+include::{snippets}/security-role-tests/get-security-roles/auto-section.adoc[]
 
-include::{snippets}/role-tests/create-security-role/auto-section.adoc[]
+include::{snippets}/security-role-tests/create-security-role/auto-section.adoc[]
 
-include::{snippets}/role-tests/get-security-role/auto-section.adoc[]
+include::{snippets}/security-role-tests/get-security-role/auto-section.adoc[]
 
-include::{snippets}/role-tests/update-security-role/auto-section.adoc[]
+include::{snippets}/security-role-tests/update-security-role/auto-section.adoc[]
 
-include::{snippets}/role-tests/delete-security-role/auto-section.adoc[]
+include::{snippets}/security-role-tests/delete-security-role/auto-section.adoc[]
 
-include::{snippets}/role-tests/audit-security-role/auto-section.adoc[]
+include::{snippets}/security-role-tests/audit-security-role/auto-section.adoc[]
 
 == Access Rules
 include::{snippets}/access-rule-tests/get-access-rules/auto-section.adoc[]
