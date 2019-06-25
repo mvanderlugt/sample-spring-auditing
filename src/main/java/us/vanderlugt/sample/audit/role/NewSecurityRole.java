@@ -21,8 +21,8 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
-import static org.apache.commons.lang3.StringUtils.upperCase;
 
 @Data
 public class NewSecurityRole {
@@ -38,6 +38,6 @@ public class NewSecurityRole {
     }
 
     public void setCode(String code) {
-        this.code = upperCase(trimToNull(code));
+        this.code = lowerCase(trimToNull(code));
     }
 }

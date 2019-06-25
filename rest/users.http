@@ -85,7 +85,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Administrator"
+  "name": "Administrator",
+  "code": "ADMINISTRATOR"
 }
 
 > {%

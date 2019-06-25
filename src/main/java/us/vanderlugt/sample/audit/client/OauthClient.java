@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+
 @Data
 @Entity
 @Audited
@@ -140,6 +142,6 @@ public class OauthClient extends BaseEntity implements ClientDetails {
     }
 
     public void setClientId(String clientId) {
-        this.clientId = StringUtils.upperCase(clientId);
+        this.clientId = lowerCase(clientId);
     }
 }

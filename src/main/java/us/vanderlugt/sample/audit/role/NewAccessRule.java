@@ -22,7 +22,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import static org.apache.commons.lang3.StringUtils.trimToNull;
-import static org.apache.commons.lang3.StringUtils.upperCase;
 
 @Data
 public class NewAccessRule {

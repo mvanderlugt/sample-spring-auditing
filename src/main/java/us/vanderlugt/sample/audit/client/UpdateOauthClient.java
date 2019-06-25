@@ -17,12 +17,13 @@
 package us.vanderlugt.sample.audit.client;
 
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.util.Map;
 import java.util.Set;
+
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 @Data
 public class UpdateOauthClient {
@@ -53,6 +54,6 @@ public class UpdateOauthClient {
     private Set<String> autoApprove;
 
     public void setClientId(String clientId) {
-        this.clientId = StringUtils.upperCase(clientId);
+        this.clientId = lowerCase(clientId);
     }
 }

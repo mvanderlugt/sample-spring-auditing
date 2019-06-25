@@ -17,13 +17,11 @@
 package us.vanderlugt.sample.audit.role;
 
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
-import static org.apache.commons.lang3.StringUtils.upperCase;
 
 @Data
 public class UpdateSecurityRole {
@@ -38,6 +36,6 @@ public class UpdateSecurityRole {
     }
 
     public void setCode(String code) {
-        this.code = upperCase(trimToNull(code));
+        this.code = lowerCase(trimToNull(code));
     }
 }

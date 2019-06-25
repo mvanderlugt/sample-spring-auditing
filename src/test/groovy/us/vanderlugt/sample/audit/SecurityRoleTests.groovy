@@ -48,7 +48,7 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('created').doesNotExist())
                 .andExpect(jsonPath('modified').doesNotExist())
                 .andExpect(jsonPath('name', is('Administrator')))
-                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andExpect(jsonPath('code', is('administrator')))
                 .andDo(document())
     }
 
@@ -73,7 +73,7 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('modified').doesNotExist())
                 .andExpect(jsonPath('deleted').doesNotExist())
                 .andExpect(jsonPath('name', is('Administrator')))
-                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andExpect(jsonPath('code', is('administrator')))
                 .andDo(document())
     }
 
@@ -106,7 +106,7 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('content[*].created').doesNotExist())
                 .andExpect(jsonPath('content[*].modified').doesNotExist()) //todo tighten up assertions with sorting
                 .andExpect(jsonPath('content[*].name', containsInAnyOrder('Administrator', 'Manager')))
-                .andExpect(jsonPath('content[*].code', containsInAnyOrder('ADMIN', 'MANAGER')))
+                .andExpect(jsonPath('content[*].code', containsInAnyOrder('admin', 'manager')))
                 .andDo(document())
     }
 
@@ -129,7 +129,7 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('created').doesNotExist())
                 .andExpect(jsonPath('modified').doesNotExist())
                 .andExpect(jsonPath('name', is('Admin')))
-                .andExpect(jsonPath('code', is('ADMIN')))
+                .andExpect(jsonPath('code', is('admin')))
 
 
         def update = [
@@ -143,7 +143,7 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('created').doesNotExist())
                 .andExpect(jsonPath('modified').doesNotExist())
                 .andExpect(jsonPath('name', is('Administrator')))
-                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andExpect(jsonPath('code', is('administrator')))
                 .andDo(document())
 
         mvc.perform(get('/role/{id}', role.id))
@@ -152,7 +152,7 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('created').doesNotExist())
                 .andExpect(jsonPath('modified').doesNotExist())
                 .andExpect(jsonPath('name', is('Administrator')))
-                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andExpect(jsonPath('code', is('administrator')))
 
     }
 
@@ -178,7 +178,7 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('created').doesNotExist())
                 .andExpect(jsonPath('modified').doesNotExist())
                 .andExpect(jsonPath('name', is('Administrator')))
-                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andExpect(jsonPath('code', is('administrator')))
                 .andDo(document())
 
         mvc.perform(get('/role/{id}', role.id))
@@ -215,8 +215,8 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('content[*].instant').exists())
                 .andExpect(jsonPath('content[0].entity.name', is('Admin')))
                 .andExpect(jsonPath('content[1].entity.name', is('Administrator')))
-                .andExpect(jsonPath('content[0].entity.code', is('ADMIN')))
-                .andExpect(jsonPath('content[1].entity.code', is('ADMINISTRATOR')))
+                .andExpect(jsonPath('content[0].entity.code', is('admin')))
+                .andExpect(jsonPath('content[1].entity.code', is('administrator')))
                 .andDo(document())
     }
 }

@@ -31,6 +31,8 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+
 @Data
 @Entity
 @Audited
@@ -90,10 +92,10 @@ public class UserAccount extends BaseEntity {
     }
 
     public void setUsername(String username) {
-        this.username = StringUtils.lowerCase(username);
+        this.username = lowerCase(username);
     }
 
     public void setEmail(String email) {
-        this.email = StringUtils.lowerCase(email);
+        this.email = lowerCase(email);
     }
 }
