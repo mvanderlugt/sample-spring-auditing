@@ -40,6 +40,18 @@ databaseChangeLog:
               - column:
                   name: email
                   type: VARCHAR(255)
+              - column:
+                  name: expires
+                  type: TIMESTAMP
+              - column:
+                  name: password_expires
+                  type: TIMESTAMP
+              - column:
+                  name: locked
+                  type: TIMESTAMP
+              - column:
+                  name: disabled
+                  type: TIMESTAMP
         - sql:
             sql: >-
               CREATE TABLE user_account_audit AS (

@@ -24,9 +24,11 @@ import us.vanderlugt.sample.audit.common.BaseEntity;
 import us.vanderlugt.sample.audit.role.SecurityRole;
 
 import javax.persistence.*;
+import javax.validation.Constraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
@@ -46,6 +48,11 @@ public class UserAccount extends BaseEntity {
     private String lastName;
     @Email
     private String email;
+
+    private LocalDateTime expires;
+    private LocalDateTime passwordExpires;
+    private LocalDateTime locked;
+    private LocalDateTime disabled;
 
     @JsonIgnore
     @Size(max = 20)

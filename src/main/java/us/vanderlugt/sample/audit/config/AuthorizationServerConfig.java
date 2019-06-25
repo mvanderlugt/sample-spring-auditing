@@ -65,7 +65,7 @@ public class AuthorizationServerConfig implements AuthorizationServerConfigurer 
                 .withClient("TEST")
                 .secret(passwordEncoder.encode("H3lpM#Plz"))
                 .resourceIds("authorization")
-                .authorizedGrantTypes("password")
+                .authorizedGrantTypes("password", "client_credentials")
                 .scopes("all");
     }
 

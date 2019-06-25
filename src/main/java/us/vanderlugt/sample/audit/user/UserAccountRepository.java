@@ -19,7 +19,9 @@ package us.vanderlugt.sample.audit.user;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.history.RevisionRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 interface UserAccountRepository extends PagingAndSortingRepository<UserAccount, UUID>, RevisionRepository<UserAccount, UUID, Integer> {
+    Optional<UserAccount> findByUsernameIgnoreCase(String username);
 }
