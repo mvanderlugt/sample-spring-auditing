@@ -14,17 +14,15 @@
  *  limitations under the License.
  */
 
-package us.vanderlugt.sample.audit.role;
+package us.vanderlugt.sample.audit.common;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import us.vanderlugt.sample.audit.common.MapperConfiguration;
+import org.mapstruct.MapperConfig;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
-import static org.mapstruct.ReportingPolicy.IGNORE;
-
-@Mapper(config = MapperConfiguration.class)
-interface AccessRuleMapper {
-    AccessRule create(NewAccessRule newRule);
-
-    void apply(UpdateAccessRule update, @MappingTarget AccessRule role);
+@MapperConfig(componentModel = "spring",
+        uses = CustomMapping.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface MapperConfiguration {
 }

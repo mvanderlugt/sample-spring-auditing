@@ -14,17 +14,19 @@
  *  limitations under the License.
  */
 
-package us.vanderlugt.sample.audit.role;
+package us.vanderlugt.sample.audit.common;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import us.vanderlugt.sample.audit.common.MapperConfiguration;
+import com.fasterxml.jackson.core.type.TypeReference;
 
-import static org.mapstruct.ReportingPolicy.IGNORE;
+import javax.persistence.Converter;
+import java.util.Set;
 
-@Mapper(config = MapperConfiguration.class)
-interface AccessRuleMapper {
-    AccessRule create(NewAccessRule newRule);
+@Converter
+public class JsonSetConverter extends GenericJsonConverter<Set<String>> {
+    private static final TypeReference<Set<String>> TYPE_REFERENCE = new TypeReference<>() {
+    };
 
-    void apply(UpdateAccessRule update, @MappingTarget AccessRule role);
+    protected TypeReference<Set<String>> getTypeReference() {
+        return TYPE_REFERENCE;
+    }
 }

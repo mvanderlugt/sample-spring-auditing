@@ -1,0 +1,91 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_security_role
+      author: mvanderlugt@live.com
+      changes:
+        - createTable:
+            tableName: security_role
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+        - sql:
+            sql: >-
+              CREATE TABLE security_role_audit AS (
+                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                FROM security_role
+              ) WITH NO DATA;
+  - changeSet:
+      id: create_access_rule
+      author: mvanderlugt@live.com
+      changes:
+        - createTable:
+            tableName: access_rule
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: access_rule_security_role_fkey
+                    references: security_role(id)
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(500)
+              - column:
+                  name: target
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rule
+                  type: TEXT
+                  constraints:
+                    nullable: false
+        - sql:
+            sql: >-
+              CREATE TABLE access_rule_audit AS (
+                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                FROM access_rule
+              ) WITH NO DATA;

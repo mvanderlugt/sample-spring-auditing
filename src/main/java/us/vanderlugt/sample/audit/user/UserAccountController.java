@@ -37,8 +37,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class UserController {
-    private final UserRepository repository;
+public class UserAccountController {
+    private final UserAccountRepository repository;
     private final UserAccountMapper mapper;
 
     /**
@@ -80,9 +80,13 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(OK)
-    public UserAccount deleteUserAccount(@PathVariable("id") UserAccount userAccount) {
-        repository.delete(userAccount);
-        return userAccount;
+    public UserAccount deleteUserAccount(@PathVariable("id") UUID id, @PathVariable("id") UserAccount userAccount) {
+        if (userAccount != null) {
+            repository.delete(userAccount);
+            return userAccount;
+        } else {
+            throw new NotFoundResponse(UserAccount.class, id);
+        }
     }
 
     @GetMapping("/{id}/audit")

@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_oauth_client
+      author: vdoroshenko@exadel.com
+      changes:
+        - createTable:
+            tableName: oauth_client
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: client_secret
+                  type: VARCHAR(60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: resource_ids
+                  type: ${json}
+              - column:
+                  name: scope
+                  type: ${json}
+              - column:
+                  name: grant_types
+                  type: ${json}
+              - column:
+                  name: authorities
+                  type: ${json}
+              - column:
+                  name: redirect_uri
+                  type: ${json}
+              - column:
+                  name: access_token_expiration
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: refresh_token_expiration
+                  type: BIGINT
+              - column:
+                  name: additional_information
+                  type: ${json}
+              - column:
+                  name: auto_approve
+                  type: ${json}
+        - sql:
+            sql: >-
+              CREATE TABLE oauth_client_audit AS (
+                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                FROM oauth_client
+              ) WITH NO DATA;

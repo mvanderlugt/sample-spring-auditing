@@ -1,4 +1,12 @@
 databaseChangeLog:
+  - property:
+      name: json
+      value: JSONB
+      dbms: postgres
+  - property:
+      name: json
+      value: TEXT
+      dbms: h2
   - changeSet:
       id: setup_hibernate_envers
       author: mvanderlugt@live.com
@@ -15,167 +23,12 @@ databaseChangeLog:
               - column:
                   name: revtstmp
                   type: BIGINT
-  - changeSet:
-      id: create_user_table
-      author: mvanderlugt@live.com
-      changes:
-        - createTable:
-            tableName: user_account
-            columns:
-              - column:
-                  name: id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: created
-                  type: TIMESTAMP
-                  defaultValueComputed: now()
-                  constraints:
-                    nullable: false
-              - column:
-                  name: modified
-                  type: TIMESTAMP
-                  defaultValueComputed: now()
-                  constraints:
-                    nullable: false
-              - column:
-                  name: username
-                  type: VARCHAR(100)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: password
-                  type: VARCHAR(100)
-              - column:
-                  name: first_name
-                  type: VARCHAR(50)
-              - column:
-                  name: last_name
-                  type: VARCHAR(100)
-              - column:
-                  name: email
-                  type: VARCHAR(255)
-        - sql:
-            sql: >-
-              CREATE TABLE user_account_audit AS (
-                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM user_account
-              ) WITH NO DATA;
-  - changeSet:
-      id: create_security_role
-      author: mvanderlugt@live.com
-      changes:
-        - createTable:
-            tableName: security_role
-            columns:
-              - column:
-                  name: id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: created
-                  type: TIMESTAMP
-                  defaultValueComputed: now()
-                  constraints:
-                    nullable: false
-              - column:
-                  name: modified
-                  type: TIMESTAMP
-                  defaultValueComputed: now()
-                  constraints:
-                    nullable: false
-              - column:
-                  name: name
-                  type: VARCHAR(100)
-                  constraints:
-                    nullable: false
-        - sql:
-            sql: >-
-              CREATE TABLE security_role_audit AS (
-                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM security_role
-              ) WITH NO DATA;
-  - changeSet:
-      id: create_user_account_security_roles
-      author: mvanderlugt@live.com
-      changes:
-        - createTable:
-            tableName: user_account_security_roles
-            columns:
-              - column:
-                  name: user_account_id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-                    foreignKeyName: user_account_security_roles_user_account_fkey
-                    references: user_account(id)
-              - column:
-                  name: security_role_id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-                    foreignKeyName: user_account_security_roles_security_role_fkey
-                    references: security_role(id)
-        - sql:
-            sql: >-
-              CREATE TABLE user_account_security_roles_audit AS (
-                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM user_account_security_roles
-              ) WITH NO DATA;
-  - changeSet:
-      id: create_access_rule
-      author: mvanderlugt@live.com
-      changes:
-        - createTable:
-            tableName: access_rule
-            columns:
-              - column:
-                  name: id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: created
-                  type: TIMESTAMP
-                  defaultValueComputed: now()
-                  constraints:
-                    nullable: false
-              - column:
-                  name: modified
-                  type: TIMESTAMP
-                  defaultValueComputed: now()
-                  constraints:
-                    nullable: false
-              - column:
-                  name: role_id
-                  type: UUID
-                  constraints:
-                    nullable: false
-                    foreignKeyName: access_rule_security_role_fkey
-                    references: security_role(id)
-              - column:
-                  name: name
-                  type: VARCHAR(100)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: description
-                  type: VARCHAR(500)
-              - column:
-                  name: target
-                  type: TEXT
-                  constraints:
-                    nullable: false
-              - column:
-                  name: rule
-                  type: TEXT
-                  constraints:
-                    nullable: false
-        - sql:
-            sql: >-
-              CREATE TABLE access_rule_audit AS (
-                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
-                FROM access_rule
-              ) WITH NO DATA;
+  - include:
+      file: db.security-role.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: db.user-account.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: db.oauth-client.yaml
+      relativeToChangelogFile: true

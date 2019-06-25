@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package us.vanderlugt.sample.audit.user;
+package us.vanderlugt.sample.audit.client;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.history.RevisionRepository;
 
 import java.util.UUID;
 
-interface UserRepository extends PagingAndSortingRepository<UserAccount, UUID>, RevisionRepository<UserAccount, UUID, Integer> {
+public interface OauthClientRepository extends PagingAndSortingRepository<OauthClient, UUID>, RevisionRepository<OauthClient, UUID, Integer> {
 }

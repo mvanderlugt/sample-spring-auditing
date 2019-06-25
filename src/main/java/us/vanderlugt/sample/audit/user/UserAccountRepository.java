@@ -14,17 +14,12 @@
  *  limitations under the License.
  */
 
-package us.vanderlugt.sample.audit.role;
+package us.vanderlugt.sample.audit.user;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import us.vanderlugt.sample.audit.common.MapperConfiguration;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.history.RevisionRepository;
 
-import static org.mapstruct.ReportingPolicy.IGNORE;
+import java.util.UUID;
 
-@Mapper(config = MapperConfiguration.class)
-interface AccessRuleMapper {
-    AccessRule create(NewAccessRule newRule);
-
-    void apply(UpdateAccessRule update, @MappingTarget AccessRule role);
+interface UserAccountRepository extends PagingAndSortingRepository<UserAccount, UUID>, RevisionRepository<UserAccount, UUID, Integer> {
 }

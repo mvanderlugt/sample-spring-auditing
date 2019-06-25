@@ -14,17 +14,20 @@
  *  limitations under the License.
  */
 
-package us.vanderlugt.sample.audit.role;
+package us.vanderlugt.sample.audit.client;
 
+import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import us.vanderlugt.sample.audit.common.MapperConfiguration;
-
-import static org.mapstruct.ReportingPolicy.IGNORE;
+import us.vanderlugt.sample.audit.common.Password;
 
 @Mapper(config = MapperConfiguration.class)
-interface AccessRuleMapper {
-    AccessRule create(NewAccessRule newRule);
+interface OauthClientMapper {
+    @Mapping(source = "clientSecret", target = "clientSecret", qualifiedBy = Password.class)
+    OauthClient create(NewOauthClient newAccount);
 
-    void apply(UpdateAccessRule update, @MappingTarget AccessRule role);
+    @InheritConfiguration
+    void apply(UpdateOauthClient update, @MappingTarget OauthClient userAccount);
 }

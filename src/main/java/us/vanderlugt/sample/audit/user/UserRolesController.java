@@ -36,7 +36,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/user/{userId}/role")
 @RequiredArgsConstructor
 public class UserRolesController {
-    private final UserRepository userRepository;
+    private final UserAccountRepository userRepository;
     private final SecurityRoleRepository roleRepository;
 
     @GetMapping

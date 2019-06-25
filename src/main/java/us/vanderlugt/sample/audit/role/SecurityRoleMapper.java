@@ -18,10 +18,11 @@ package us.vanderlugt.sample.audit.role;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import us.vanderlugt.sample.audit.common.MapperConfiguration;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
+@Mapper(config = MapperConfiguration.class)
 interface SecurityRoleMapper {
     SecurityRole create(NewSecurityRole newRole);
 
