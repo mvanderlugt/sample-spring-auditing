@@ -51,7 +51,7 @@ public class NewOauthClient {
     private Set<String> redirectUri = new HashSet<>();
 
     @NotNull
-    private Set<String> authorities = new HashSet<>();
+    private Set<String> grantedAuthorities = new HashSet<>();
 
     @NotNull
     @Min(0)

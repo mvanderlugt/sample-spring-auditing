@@ -39,7 +39,7 @@ public class UpdateOauthClient {
 
     private Set<String> redirectUri;
 
-    private Set<String> authorities;
+    private Set<String> grantedAuthorities;
 
     @Min(0)
     private Integer accessTokenExpiration;

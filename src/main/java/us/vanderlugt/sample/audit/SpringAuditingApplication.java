@@ -19,6 +19,7 @@ package us.vanderlugt.sample.audit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -33,6 +34,7 @@ import javax.validation.constraints.Min;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableSpringDataWebSupport
+@EnableConfigurationProperties
 @EnableJpaRepositories(repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 public class SpringAuditingApplication {
     @Value("${password.strength:10}")

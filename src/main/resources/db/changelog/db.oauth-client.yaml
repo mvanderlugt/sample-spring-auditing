@@ -44,7 +44,7 @@ databaseChangeLog:
                   name: grant_types
                   type: ${json}
               - column:
-                  name: authorities
+                  name: granted_authorities
                   type: ${json}
               - column:
                   name: redirect_uri

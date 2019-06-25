@@ -23,8 +23,7 @@ import java.util.Set;
 
 @Converter
 public class JsonSetConverter extends GenericJsonConverter<Set<String>> {
-    private static final TypeReference<Set<String>> TYPE_REFERENCE = new TypeReference<>() {
-    };
+    private static final TypeReference<Set<String>> TYPE_REFERENCE = new TypeReference<>() {};
 
     protected TypeReference<Set<String>> getTypeReference() {
         return TYPE_REFERENCE;

@@ -21,6 +21,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.util.CollectionUtils;
 import us.vanderlugt.sample.audit.common.BaseEntity;
 import us.vanderlugt.sample.audit.common.JsonMapConverter;
@@ -31,8 +34,10 @@ import javax.persistence.Entity;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -40,7 +45,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 @JsonPropertyOrder({"id", "clientId", "clientSecret", "resourceIds", "grantTypes", "scope", "authorities",
         "accessTokenExpiration", "refreshTokenExpiration", "additionalInformation", "autoApprove", "redirectUri"})
-public class OauthClient extends BaseEntity {//implements ClientDetails {
+public class OauthClient extends BaseEntity implements ClientDetails {
     @NotNull
     @Size(min = 3, max = 100)
     private String clientId;
@@ -68,7 +73,7 @@ public class OauthClient extends BaseEntity {//implements ClientDetails {
 
     @NotNull
     @Convert(converter = JsonSetConverter.class)
-    private Set<String> authorities;
+    private Set<String> grantedAuthorities;
 
     @NotNull
     @Min(0)
@@ -85,27 +90,46 @@ public class OauthClient extends BaseEntity {//implements ClientDetails {
     @Convert(converter = JsonSetConverter.class)
     private Set<String> autoApprove;
 
-    //    @Override
+    @Override
     public boolean isSecretRequired() {
         return true;
     }
 
-    //    @Override
+    @Override
     public boolean isScoped() {
         return !getScope().isEmpty();
     }
 
-    //    @Override
+    @Override
+    public Set<String> getAuthorizedGrantTypes() {
+        return getGrantTypes().stream()
+                .map(GrantType::getCode)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<String> getRegisteredRedirectUri() {
+        return getRedirectUri();
+    }
+
+    @Override
+    public Collection<GrantedAuthority> getAuthorities() {
+        return getGrantedAuthorities().stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
     public Integer getAccessTokenValiditySeconds() {
         return getAccessTokenExpiration();
     }
 
-    //    @Override
+    @Override
     public Integer getRefreshTokenValiditySeconds() {
         return getRefreshTokenExpiration();
     }
 
-    //    @Override
+    @Override
     public boolean isAutoApprove(String scope) {
         boolean autoApproveScope = false;
         if (!CollectionUtils.isEmpty(autoApprove)) {
@@ -113,12 +137,4 @@ public class OauthClient extends BaseEntity {//implements ClientDetails {
         }
         return autoApproveScope;
     }
-
-//    public Collection<GrantedAuthority> getAuthorities() { //todo once spring security dependency is added
-//        Set<GrantedAuthority> result = new HashSet<>();
-//        if (StringUtils.hasText(authorities)) {
-//            result = Arrays.stream(authorities.split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
-//        }
-//        return result;
-//    }
 }

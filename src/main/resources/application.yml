@@ -18,3 +18,10 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
       WRITE_EMPTY_JSON_ARRAYS: false
       WRITE_BIGDECIMAL_AS_PLAIN: true
+jwt:
+  keystore:
+    location: classpath:/jwt.jks
+    password: H3lpM#Plz
+  key:
+    alias: jwt
+#    password: none

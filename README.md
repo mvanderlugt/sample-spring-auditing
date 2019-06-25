@@ -8,6 +8,18 @@ can be found in [UserAccount.java](src/main/java/us/vanderlugt/sample/audit/user
 ## Authentication
 
 
+## JWT Signing Key Generated via Keytool
+[Keytool Reference](https://docs.oracle.com/javase/10/tools/keytool.htm)
+```
+keytool -genkeypair -alias jwt -keyalg RSA \
+  -keystore jwt.jks -storepass 'H3lpM#Plz' \
+  -dname "CN=Mark Vander Lugt,OU=Unknown,O=Unknown,L=Little Rock,S=AR,C=US" 
+```
+And the certificate can be exported using keytool and openssl
+```
+keytool -list -rfc --keystore jwt.jks | openssl x509 -inform pem -pubkey
+```
+
 ## License
 
 This project is released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
