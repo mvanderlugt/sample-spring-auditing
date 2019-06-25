@@ -19,6 +19,7 @@ package us.vanderlugt.sample.audit.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import us.vanderlugt.sample.audit.common.BaseEntity;
 import us.vanderlugt.sample.audit.role.SecurityRole;
@@ -62,18 +63,6 @@ public class UserAccount extends BaseEntity {
                     name = "security_role_id", referencedColumnName = "id"))
     private Set<SecurityRole> roles = new HashSet<>();
 
-    @PrePersist
-    @PreUpdate
-    public void beforeSave() {
-        if (getUsername() != null) {
-            setUsername(getUsername().toLowerCase());
-        }
-        if (getEmail() != null) {
-            setEmail(getEmail().toLowerCase());
-        }
-    }
-
-
     public Set<SecurityRole> getRoles() {
         return Collections.unmodifiableSet(roles);
     }
@@ -98,5 +87,13 @@ public class UserAccount extends BaseEntity {
 
     public boolean remove(SecurityRole role) {
         return roles.remove(role);
+    }
+
+    public void setUsername(String username) {
+        this.username = StringUtils.lowerCase(username);
+    }
+
+    public void setEmail(String email) {
+        this.email = StringUtils.lowerCase(email);
     }
 }

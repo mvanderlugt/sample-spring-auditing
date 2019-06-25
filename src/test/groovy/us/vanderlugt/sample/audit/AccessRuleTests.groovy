@@ -41,7 +41,8 @@ class AccessRuleTests extends BaseTest {
     @Transactional
     void createAccessRule() throws Exception {
         def role = [
-                name: 'Manager'
+                name: 'Manager',
+                code: 'MANAGER'
         ]
 
         role = parseJson(
@@ -73,7 +74,8 @@ class AccessRuleTests extends BaseTest {
     @Transactional
     void getAccessRules() throws Exception {
         def role = [
-                name: 'Manager'
+                name: 'Manager',
+                code: 'MANAGER'
         ]
 
         role = parseJson(
@@ -108,7 +110,8 @@ class AccessRuleTests extends BaseTest {
     @Transactional
     void getNoAccessRules() throws Exception {
         def role = [
-                name: 'Manager'
+                name: 'Manager',
+                code: 'MANAGER'
         ]
 
         role = parseJson(
@@ -125,7 +128,8 @@ class AccessRuleTests extends BaseTest {
     @Transactional
     void updateAccessRule() throws Exception {
         def role = [
-                name: 'Manager'
+                name: 'Manager',
+                code: 'MANAGER'
         ]
 
         role = parseJson(
@@ -167,7 +171,8 @@ class AccessRuleTests extends BaseTest {
     @Transactional
     void deleteAccessRule() throws Exception {
         def role = [
-                name: 'Manager'
+                name: 'Manager',
+                code: 'MANAGER'
         ]
 
         role = parseJson(
@@ -199,7 +204,8 @@ class AccessRuleTests extends BaseTest {
     // envers writes data when the transaction closes, instead of rolling back flush the context afterwards to reset the database
     void auditAccessRole() throws Exception {
         def request = [
-                name: 'Admin'
+                name: 'Admin',
+                code: 'MANAGER'
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
@@ -208,7 +214,8 @@ class AccessRuleTests extends BaseTest {
                         .andReturn())
 
         def update = [
-                name: 'Administrator'
+                name: 'Administrator',
+                code: 'ADMINISTRATOR'
         ]
 
         mvc.perform(put('/role/{id}', role.id)

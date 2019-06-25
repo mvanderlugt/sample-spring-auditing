@@ -17,12 +17,27 @@
 package us.vanderlugt.sample.audit.role;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import static org.apache.commons.lang3.StringUtils.trimToNull;
+import static org.apache.commons.lang3.StringUtils.upperCase;
 
 @Data
 public class UpdateSecurityRole {
     @Size(min = 1, max = 100)
     private String name;
+
+    @Size(min = 3, max = 100)
+    private String code;
+
+    public void setName(String name) {
+        this.name = trimToNull(name);
+    }
+
+    public void setCode(String code) {
+        this.code = upperCase(trimToNull(code));
+    }
 }

@@ -21,6 +21,9 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
+
 @Data
 class UpdateUserAccount {
     @Size(min = 1, max = 100)
@@ -33,4 +36,24 @@ class UpdateUserAccount {
     private String lastName;
     @Email
     private String email;
+
+    public void setUsername(String username) {
+        this.username = lowerCase(trimToNull(username));
+    }
+
+    public void setPassword(String password) {
+        this.password = trimToNull(password);
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = trimToNull(firstName);
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = trimToNull(lastName);
+    }
+
+    public void setEmail(String email) {
+        this.email = lowerCase(trimToNull(email));
+    }
 }

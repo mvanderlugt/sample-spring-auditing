@@ -21,6 +21,9 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import static org.apache.commons.lang3.StringUtils.trimToNull;
+import static org.apache.commons.lang3.StringUtils.upperCase;
+
 @Data
 public class NewAccessRule {
     @NotNull
@@ -30,4 +33,12 @@ public class NewAccessRule {
     private String description;
     private String target;
     private String rule;
+
+    public void setName(String name) {
+        this.name = trimToNull(name);
+    }
+
+    public void setDescription(String description) {
+        this.description = trimToNull(description);
+    }
 }

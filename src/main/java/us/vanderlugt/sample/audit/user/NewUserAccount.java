@@ -17,10 +17,14 @@
 package us.vanderlugt.sample.audit.user;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 @Data
 class NewUserAccount {
@@ -36,4 +40,24 @@ class NewUserAccount {
     private String lastName;
     @Email
     private String email;
+
+    public void setUsername(String username) {
+        this.username = lowerCase(trimToNull(username));
+    }
+
+    public void setPassword(String password) {
+        this.password = trimToNull(password);
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = trimToNull(firstName);
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = trimToNull(lastName);
+    }
+
+    public void setEmail(String email) {
+        this.email = lowerCase(trimToNull(email));
+    }
 }

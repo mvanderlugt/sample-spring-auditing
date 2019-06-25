@@ -49,7 +49,7 @@ class UserRolesTests extends BaseTest {
                    .andExpect(status().isCreated())
                    .andReturn())
 
-        def roleRequest = [name: 'Administrator']
+        def roleRequest = [name: 'Administrator', code: 'ADMINISTRATOR']
         def role = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(roleRequest)))
@@ -103,7 +103,7 @@ class UserRolesTests extends BaseTest {
                    .andExpect(status().isCreated())
                    .andReturn())
 
-        def roleRequest = [name: 'Administrator']
+        def roleRequest = [name: 'Administrator', code: 'ADMINISTRATOR']
         def role = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(roleRequest)))
@@ -114,7 +114,7 @@ class UserRolesTests extends BaseTest {
                 .content(toJson(role.id)))
            .andExpect(status().isOk())
 
-        roleRequest = [name: 'Manager']
+        roleRequest = [name: 'Manager', code: 'MANAGER']
         def role2 = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(roleRequest)))
@@ -149,7 +149,7 @@ class UserRolesTests extends BaseTest {
                    .andExpect(status().isCreated())
                    .andReturn())
 
-        def roleRequest = [name: 'Administrator']
+        def roleRequest = [name: 'Administrator', code: 'ADMINISTRATOR']
         def role = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(roleRequest)))
@@ -190,7 +190,7 @@ class UserRolesTests extends BaseTest {
                    .andExpect(status().isCreated())
                    .andReturn())
 
-        def roleRequest = [name: 'Administrator']
+        def roleRequest = [name: 'Administrator', code: 'ADMINISTRATOR']
         def role = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(roleRequest)))
@@ -201,7 +201,7 @@ class UserRolesTests extends BaseTest {
            .andExpect(status().isOk())
 
 
-        roleRequest = [name: 'Manager']
+        roleRequest = [name: 'Manager', code: 'MANAGER']
         def role2 = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(roleRequest)))
@@ -212,14 +212,14 @@ class UserRolesTests extends BaseTest {
            .andExpect(status().isOk())
 
 
-        roleRequest = [name: 'sudoers']
+        roleRequest = [name: 'sudoers', code: 'SUDOERS']
         def role3 = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(roleRequest)))
                    .andExpect(status().isCreated())
                    .andReturn())
 
-        roleRequest = [name: 'minions']
+        roleRequest = [name: 'minions', code: 'MINIONS']
         def role4 = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(roleRequest)))

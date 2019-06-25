@@ -47,7 +47,7 @@ public class UserAccountService implements UserDetailsService {
                         u.getPasswordExpires() == null || u.getPasswordExpires().isAfter(now),
                         u.getLocked() == null,
                         u.getRoles().stream()
-                                .map(r -> new SimpleGrantedAuthority(r.getName()))
+                                .map(r -> new SimpleGrantedAuthority(r.getCode()))
                                 .collect(Collectors.toSet())))
                 .orElseThrow(() -> new UsernameNotFoundException("Unable to find user " + username));
     }

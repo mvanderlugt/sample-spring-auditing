@@ -28,6 +28,12 @@ databaseChangeLog:
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
+              - column:
+                  name: code
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
         - sql:
             sql: >-
               CREATE TABLE security_role_audit AS (

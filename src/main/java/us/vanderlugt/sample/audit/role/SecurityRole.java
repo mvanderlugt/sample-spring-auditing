@@ -19,14 +19,12 @@ package us.vanderlugt.sample.audit.role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import us.vanderlugt.sample.audit.common.BaseEntity;
 import us.vanderlugt.sample.audit.user.UserAccount;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
@@ -40,6 +38,10 @@ public class SecurityRole extends BaseEntity {
     @Size(min = 1, max = 100)
     private String name;
 
+    @NotNull
+    @Size(min = 3, max = 100)
+    private String code;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<UserAccount> users;
@@ -51,7 +53,6 @@ public class SecurityRole extends BaseEntity {
             orphanRemoval = true
     )
     private Set<AccessRule> rules = new HashSet<>();
-
 
     public Set<AccessRule> getRules() {
         return Collections.unmodifiableSet(rules);
@@ -78,5 +79,9 @@ public class SecurityRole extends BaseEntity {
     public boolean remove(AccessRule rule) {
         rule.setRole(null);
         return rules.remove(rule);
+    }
+
+    public void setCode(String code) {
+        this.code = StringUtils.upperCase(code);
     }
 }

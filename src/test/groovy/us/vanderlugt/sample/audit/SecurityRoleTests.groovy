@@ -38,16 +38,18 @@ class SecurityRoleTests extends BaseTest {
     @Transactional
     void createSecurityRole() throws Exception {
         def request = [
-                name: 'Administrator'
+                name: 'Administrator',
+                code: 'administrator'
         ]
         mvc.perform(post('/role')
                 .content(toJson(request)))
-           .andExpect(status().isCreated())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('name', is('Administrator')))
-           .andDo(document())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('Administrator')))
+                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andDo(document())
     }
 
 
@@ -55,118 +57,132 @@ class SecurityRoleTests extends BaseTest {
     @Transactional
     void getSecurityRole() throws Exception {
         def request = [
-                name: 'Administrator'
+                name: 'Administrator',
+                code: 'ADMINISTRATOR'
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(request)))
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(get('/role/{id}', role.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('deleted').doesNotExist())
-           .andExpect(jsonPath('name', is('Administrator')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('deleted').doesNotExist())
+                .andExpect(jsonPath('name', is('Administrator')))
+                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andDo(document())
     }
 
     @Test
     void getNoSecurityRoles() throws Exception {
         mvc.perform(get('/role'))
-           .andExpect(status().isNoContent())
+                .andExpect(status().isNoContent())
     }
 
     @Test
     @Transactional
     void getSecurityRoles() throws Exception {
         [
-                [name: 'Administrator'],
-                [name: 'Manager']
+                [name: 'Administrator', code: 'ADMIN'],
+                [name: 'Manager', code: 'MANAGER']
         ].forEach { request ->
             mvc.perform(post('/role')
                     .content(toJson(request)))
-               .andExpect(status().isCreated())
+                    .andExpect(status().isCreated())
         }
 
         mvc.perform(get('/role'))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('numberOfElements', is(2)))
-           .andExpect(jsonPath('totalElements', is(2)))
-           .andExpect(jsonPath('totalPages', is(1)))
-           .andExpect(jsonPath('number').doesNotExist()) //default values don't get serialized
-           .andExpect(jsonPath('size', is(10)))
-           .andExpect(jsonPath('content[*].id').exists())
-           .andExpect(jsonPath('content[*].created').doesNotExist())
-           .andExpect(jsonPath('content[*].modified').doesNotExist()) //todo tighten up assertions with sorting
-           .andExpect(jsonPath('content[*].name', containsInAnyOrder('Administrator', 'Manager')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('numberOfElements', is(2)))
+                .andExpect(jsonPath('totalElements', is(2)))
+                .andExpect(jsonPath('totalPages', is(1)))
+                .andExpect(jsonPath('number').doesNotExist()) //default values don't get serialized
+                .andExpect(jsonPath('size', is(10)))
+                .andExpect(jsonPath('content[*].id').exists())
+                .andExpect(jsonPath('content[*].created').doesNotExist())
+                .andExpect(jsonPath('content[*].modified').doesNotExist()) //todo tighten up assertions with sorting
+                .andExpect(jsonPath('content[*].name', containsInAnyOrder('Administrator', 'Manager')))
+                .andExpect(jsonPath('content[*].code', containsInAnyOrder('ADMIN', 'MANAGER')))
+                .andDo(document())
     }
 
     @Test
     @Transactional
     void updateSecurityRole() throws Exception {
         def request = [
-                name: 'Admin'
+                name: 'Admin',
+                code: 'ADMIN'
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(request)))
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(get('/role/{id}', role.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('name', is('Admin')))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('Admin')))
+                .andExpect(jsonPath('code', is('ADMIN')))
+
 
         def update = [
-                name: 'Administrator'
+                name: 'Administrator',
+                code: 'ADMINISTRATOR'
         ]
 
         mvc.perform(put('/role/{id}', role.id)
                 .content(toJson(update)))
-           .andExpect(jsonPath('id', is(role.id)))
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('name', is('Administrator')))
-           .andDo(document())
+                .andExpect(jsonPath('id', is(role.id)))
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('Administrator')))
+                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andDo(document())
 
         mvc.perform(get('/role/{id}', role.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('name', is('Administrator')))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('Administrator')))
+                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+
     }
 
     @Test
     @Transactional
     void deleteSecurityRole() throws Exception {
         def request = [
-                name: 'Administrator'
+                name: 'Administrator',
+                code: 'ADMINISTRATOR'
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(request)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(get('/role/{id}', role.id))
-           .andExpect(status().isOk())
+                .andExpect(status().isOk())
 
         mvc.perform(delete('/role/{id}', role.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('name', is('Administrator')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('Administrator')))
+                .andExpect(jsonPath('code', is('ADMINISTRATOR')))
+                .andDo(document())
 
         mvc.perform(get('/role/{id}', role.id))
-           .andExpect(status().isNotFound())
+                .andExpect(status().isNotFound())
     }
 
     @Test
@@ -174,29 +190,33 @@ class SecurityRoleTests extends BaseTest {
     // envers writes data when the transaction closes, instead of rolling back flush the context afterwards to reset the database
     void auditSecurityRole() throws Exception {
         def request = [
-                name: 'Admin'
+                name: 'Admin',
+                code: 'ADMIN'
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
                         .content(toJson(request)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         def update = [
-                name: 'Administrator'
+                name: 'Administrator',
+                code: 'ADMINISTRATOR'
         ]
 
         mvc.perform(put('/role/{id}', role.id)
                 .content(toJson(update)))
 
         mvc.perform(get('/role/{id}/audit', role.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('totalElements', is(2)))
-           .andExpect(jsonPath('numberOfElements', is(2)))
-           .andExpect(jsonPath('content[*].id', contains(1, 2)))
-           .andExpect(jsonPath('content[*].instant').exists())
-           .andExpect(jsonPath('content[0].entity.name', is('Admin')))
-           .andExpect(jsonPath('content[1].entity.name', is('Administrator')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('totalElements', is(2)))
+                .andExpect(jsonPath('numberOfElements', is(2)))
+                .andExpect(jsonPath('content[*].id', contains(1, 2)))
+                .andExpect(jsonPath('content[*].instant').exists())
+                .andExpect(jsonPath('content[0].entity.name', is('Admin')))
+                .andExpect(jsonPath('content[1].entity.name', is('Administrator')))
+                .andExpect(jsonPath('content[0].entity.code', is('ADMIN')))
+                .andExpect(jsonPath('content[1].entity.code', is('ADMINISTRATOR')))
+                .andDo(document())
     }
 }

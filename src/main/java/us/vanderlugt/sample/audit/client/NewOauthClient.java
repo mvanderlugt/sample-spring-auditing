@@ -17,6 +17,7 @@
 package us.vanderlugt.sample.audit.client;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -66,4 +67,8 @@ public class NewOauthClient {
 
     @NotNull
     private Set<String> autoApprove = new HashSet<>();
+
+    public void setClientId(String clientId) {
+        this.clientId = StringUtils.upperCase(clientId);
+    }
 }
