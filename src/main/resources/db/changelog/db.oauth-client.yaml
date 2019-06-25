@@ -18,9 +18,19 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: created_by
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
                   name: modified
                   type: TIMESTAMP
                   defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified_by
+                  type: VARCHAR(100)
                   constraints:
                     nullable: false
               - column:

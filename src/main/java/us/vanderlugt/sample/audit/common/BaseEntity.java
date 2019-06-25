@@ -21,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -47,7 +49,13 @@ public class BaseEntity {
     @CreatedDate
     @JsonIgnore
     private LocalDateTime created;
+    @CreatedBy
+    @JsonIgnore
+    private String createdBy;
     @LastModifiedDate
     @JsonIgnore
     private LocalDateTime modified;
+    @LastModifiedBy
+    @JsonIgnore
+    private String modifiedBy;
 }
