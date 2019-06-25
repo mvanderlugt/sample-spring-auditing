@@ -40,7 +40,7 @@ class OauthClientTests extends BaseTest {
     @Transactional
     void createOauthClient() throws Exception {
         def request = [
-                clientId : 'TEST_CLIENT',
+                clientId : 'test_client',
                 clientSecret : 'Password1',
                 resourceIds: ['authorization'],
                 grantTypes    : ['password']

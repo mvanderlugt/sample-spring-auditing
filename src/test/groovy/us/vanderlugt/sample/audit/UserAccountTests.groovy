@@ -38,11 +38,11 @@ class UserAccountTests extends BaseTest {
     @Transactional
     void createUser() throws Exception {
         def request = [
-                username : 'mvanderlugt',
+                username : 'MarkV',
                 password : 'Password1',
                 firstName: 'Mark',
                 lastName : 'Vander Lugt',
-                email    : 'mvanderlugt@live.com'
+                email    : 'MVanderLugt@live.com'
         ]
         mvc.perform(post('/user')
                 .content(toJson(request)))
@@ -50,7 +50,7 @@ class UserAccountTests extends BaseTest {
            .andExpect(jsonPath('id').exists())
            .andExpect(jsonPath('created').doesNotExist())
            .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('username', is('mvanderlugt')))
+           .andExpect(jsonPath('username', is('markv')))
            .andExpect(jsonPath('password').doesNotExist())
            .andExpect(jsonPath('firstName', is('Mark')))
            .andExpect(jsonPath('lastName', is('Vander Lugt')))

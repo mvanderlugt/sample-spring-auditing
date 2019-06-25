@@ -96,7 +96,7 @@ public class OauthClient extends BaseEntity implements ClientDetails {
     @PreUpdate
     public void beforeSave() {
         if (getClientId() != null) {
-            setClientId(getClientId().toLowerCase());
+            setClientId(getClientId().toUpperCase());
         }
     }
 
