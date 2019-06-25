@@ -16,20 +16,18 @@
 
 package us.vanderlugt.sample.audit.user;
 
+import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import us.vanderlugt.sample.audit.common.CustomMapping;
 import us.vanderlugt.sample.audit.common.MapperConfiguration;
 import us.vanderlugt.sample.audit.common.Password;
 
-import static org.mapstruct.ReportingPolicy.IGNORE;
-
 @Mapper(config = MapperConfiguration.class)
 interface UserAccountMapper {
-    @Mapping(source = "password", target = "password", qualifiedBy = Password.class)
+    @Mapping(target = "password", qualifiedBy = Password.class)
     UserAccount create(NewUserAccount newAccount);
 
-    @Mapping(source = "password", target = "password", qualifiedBy = Password.class)
+    @InheritConfiguration
     void apply(UpdateUserAccount update, @MappingTarget UserAccount userAccount);
 }

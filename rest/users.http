@@ -11,6 +11,11 @@ Accept: application/json
   }
 %}
 ###
+GET {{host}}/user
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
 POST {{host}}/user
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -24,6 +29,11 @@ Accept: application/json
   "email": "mvanderlugt@live.com"
 }
 
+> {%
+    if( response.status === 201 ) {
+    client.global.set("userId", response.body.id);
+  }
+ %}
 ###
 POST {{host}}/oauth/token
   ?client_id={{clientId}}
@@ -40,11 +50,13 @@ username=mvanderlugt&password=Password1
   }
 %}
 ###
-GET {{host}}/user/{{user_id}}
+GET {{host}}/user/{{userId}}
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###
-PUT {{host}}/user/{{user_id}}
+PUT {{host}}/user/{{userId}}
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 Accept: application/json
 
@@ -57,7 +69,42 @@ Accept: application/json
 }
 
 ###
-GET {{host}}/user/{{user_id}}/audit
+GET {{host}}/user/{{userId}}/audit
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
+DELETE {{host}}/user/5064c768-fa81-4d3c-a215-16dce38c7199
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
+POST {{host}}/role
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Administrator"
+}
+
+> {%
+  if( response.status === 201 ) {
+    client.global.set("roleId", response.body.id);
+  }
+%}
+
+###
+POST {{host}}/user/{{userId}}/role
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+Accept: application/json
+
+"{{roleId}}"
+
+###
+GET {{host}}/user/{{userId}}/role
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###

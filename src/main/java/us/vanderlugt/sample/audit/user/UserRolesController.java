@@ -47,28 +47,36 @@ public class UserRolesController {
 
     @PostMapping
     @ResponseStatus(OK)
-    public Collection<SecurityRole> addRoleToUser(@PathVariable("userId") UserAccount user, @RequestBody UUID roleId) {
-        SecurityRole role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new NotFoundResponse(SecurityRole.class, roleId));
-        if (user.add(role)) {
-            log.debug("Adding role {} to user {}", role.getName(), user.getUsername());
-            user = userRepository.save(user);
+    public Collection<SecurityRole> addRoleToUser(@PathVariable("userId") UUID userId, @PathVariable("userId") UserAccount user, @RequestBody UUID roleId) {
+        if (user != null) {
+            SecurityRole role = roleRepository.findById(roleId)
+                    .orElseThrow(() -> new NotFoundResponse(SecurityRole.class, roleId));
+            if (user.add(role)) {
+                log.debug("Adding role {} to user {}", role.getName(), user.getUsername());
+                user = userRepository.save(user);
+            } else {
+                log.debug("User {} already has role {}", user.getUsername(), role.getName());
+            }
+            return user.getRoles();
         } else {
-            log.debug("User {} already has role {}", user.getUsername(), role.getName());
+            throw new NotFoundResponse(UserAccount.class, userId);
         }
-        return user.getRoles();
     }
 
     @DeleteMapping("/{roleId}")
     @ResponseStatus(OK)
-    public Collection<SecurityRole> removeRoleFromUser(@PathVariable("userId") UserAccount user, @PathVariable("roleId") SecurityRole role) {
-        if (user.getRoles().contains(role)) {
-            user.remove(role);
-            user = userRepository.save(user);
+    public Collection<SecurityRole> removeRoleFromUser(@PathVariable("userId") UUID userId, @PathVariable("userId") UserAccount user, @PathVariable("roleId") SecurityRole role) {
+        if (user != null) {
+            if (user.getRoles().contains(role)) {
+                user.remove(role);
+                user = userRepository.save(user);
+            } else {
+                throw new NotFoundResponse("role", role.getId());
+            }
+            return user.getRoles();
         } else {
-            throw new NotFoundResponse("role", role.getId());
+            throw new NotFoundResponse(UserAccount.class, userId);
         }
-        return user.getRoles();
     }
 
     @PutMapping

@@ -24,7 +24,6 @@ import us.vanderlugt.sample.audit.common.BaseEntity;
 import us.vanderlugt.sample.audit.role.SecurityRole;
 
 import javax.persistence.*;
-import javax.validation.Constraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -48,7 +47,6 @@ public class UserAccount extends BaseEntity {
     private String lastName;
     @Email
     private String email;
-
     private LocalDateTime expires;
     private LocalDateTime passwordExpires;
     private LocalDateTime locked;
@@ -64,13 +62,24 @@ public class UserAccount extends BaseEntity {
                     name = "security_role_id", referencedColumnName = "id"))
     private Set<SecurityRole> roles = new HashSet<>();
 
+    @PrePersist
+    @PreUpdate
+    public void beforeSave() {
+        if (getUsername() != null) {
+            setUsername(getUsername().toLowerCase());
+        }
+        if (getEmail() != null) {
+            setEmail(getEmail().toLowerCase());
+        }
+    }
+
 
     public Set<SecurityRole> getRoles() {
         return Collections.unmodifiableSet(roles);
     }
 
     public void setRoles(Set<SecurityRole> roles) {
-        if(roles != null) {
+        if (roles != null) {
             this.roles = new HashSet<>(roles);
         } else {
             this.roles = new HashSet<>();

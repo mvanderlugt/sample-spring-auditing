@@ -28,6 +28,7 @@ databaseChangeLog:
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
+                    unique: true
               - column:
                   name: password
                   type: VARCHAR(100)
@@ -40,6 +41,8 @@ databaseChangeLog:
               - column:
                   name: email
                   type: VARCHAR(255)
+                  constraints:
+                    unique: true
               - column:
                   name: expires
                   type: TIMESTAMP

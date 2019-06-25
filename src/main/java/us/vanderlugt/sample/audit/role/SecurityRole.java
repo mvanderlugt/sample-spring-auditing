@@ -23,7 +23,10 @@ import org.hibernate.envers.Audited;
 import us.vanderlugt.sample.audit.common.BaseEntity;
 import us.vanderlugt.sample.audit.user.UserAccount;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
@@ -31,7 +34,7 @@ import java.util.*;
 @Data
 @Entity
 @Audited
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, exclude = {"users"})
 public class SecurityRole extends BaseEntity {
     @NotNull
     @Size(min = 1, max = 100)
@@ -56,7 +59,7 @@ public class SecurityRole extends BaseEntity {
 
     public void setRules(Set<AccessRule> rules) {
         this.rules = new HashSet<>();
-        if(rules != null) {
+        if (rules != null) {
             rules.forEach(this::add);
         }
     }

@@ -31,6 +31,8 @@ import us.vanderlugt.sample.audit.common.JsonSetConverter;
 
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -89,6 +91,14 @@ public class OauthClient extends BaseEntity implements ClientDetails {
     @NotNull
     @Convert(converter = JsonSetConverter.class)
     private Set<String> autoApprove;
+
+    @PrePersist
+    @PreUpdate
+    public void beforeSave() {
+        if (getClientId() != null) {
+            setClientId(getClientId().toLowerCase());
+        }
+    }
 
     @Override
     public boolean isSecretRequired() {

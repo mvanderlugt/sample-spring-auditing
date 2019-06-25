@@ -54,7 +54,7 @@ public class AuthorizationServerConfig implements AuthorizationServerConfigurer 
     private Key key;
 
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+    public void configure(AuthorizationServerSecurityConfigurer security) {
         security.tokenKeyAccess("denyAll()")
                 .checkTokenAccess("denyAll()");
     }
@@ -70,7 +70,7 @@ public class AuthorizationServerConfig implements AuthorizationServerConfigurer 
     }
 
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore())
                 .tokenEnhancer(chain(tokenEnhancer(), accessTokenConverter()))
                 .authenticationManager(authenticationManager);
