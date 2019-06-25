@@ -1,0 +1,8 @@
+logging:
+  level:
+    us.vanderlugt: DEBUG
+    org.springframework: WARN
+    org.apache: WARN
+    org.hibernate: WARN
+    liquibase: WARN
+    com.zaxxer: WARN

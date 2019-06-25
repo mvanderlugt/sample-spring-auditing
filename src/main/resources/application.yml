@@ -1,8 +1,11 @@
 server.port: 8080
 spring:
+  profiles:
+    include: default
   datasource:
     url: jdbc:h2:mem:spring-auditing
   jpa:
+    open-in-view: false
     properties:
       org.hibernate.envers:
         audit_table_suffix: _audit
