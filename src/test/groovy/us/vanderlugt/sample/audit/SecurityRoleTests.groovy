@@ -42,6 +42,7 @@ class SecurityRoleTests extends BaseTest {
                 code: 'administrator'
         ]
         mvc.perform(post('/role')
+                .with(bearer(token))
                 .content(toJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath('id').exists())
@@ -62,11 +63,13 @@ class SecurityRoleTests extends BaseTest {
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(request)))
                         .andExpect(status().isCreated())
                         .andReturn())
 
-        mvc.perform(get('/role/{id}', role.id))
+        mvc.perform(get('/role/{id}', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('id').exists())
                 .andExpect(jsonPath('created').doesNotExist())
@@ -79,7 +82,8 @@ class SecurityRoleTests extends BaseTest {
 
     @Test
     void getNoSecurityRoles() throws Exception {
-        mvc.perform(get('/role'))
+        mvc.perform(get('/role')
+                .with(bearer(token)))
                 .andExpect(status().isNoContent())
     }
 
@@ -91,11 +95,13 @@ class SecurityRoleTests extends BaseTest {
                 [name: 'Manager', code: 'MANAGER']
         ].forEach { request ->
             mvc.perform(post('/role')
+                    .with(bearer(token))
                     .content(toJson(request)))
                     .andExpect(status().isCreated())
         }
 
-        mvc.perform(get('/role'))
+        mvc.perform(get('/role')
+                .with(bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('numberOfElements', is(2)))
                 .andExpect(jsonPath('totalElements', is(2)))
@@ -119,11 +125,13 @@ class SecurityRoleTests extends BaseTest {
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(request)))
                         .andExpect(status().isCreated())
                         .andReturn())
 
-        mvc.perform(get('/role/{id}', role.id))
+        mvc.perform(get('/role/{id}', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('id').exists())
                 .andExpect(jsonPath('created').doesNotExist())
@@ -138,6 +146,7 @@ class SecurityRoleTests extends BaseTest {
         ]
 
         mvc.perform(put('/role/{id}', role.id)
+                .with(bearer(token))
                 .content(toJson(update)))
                 .andExpect(jsonPath('id', is(role.id)))
                 .andExpect(jsonPath('created').doesNotExist())
@@ -146,7 +155,8 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('code', is('administrator')))
                 .andDo(document())
 
-        mvc.perform(get('/role/{id}', role.id))
+        mvc.perform(get('/role/{id}', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('id').exists())
                 .andExpect(jsonPath('created').doesNotExist())
@@ -165,14 +175,17 @@ class SecurityRoleTests extends BaseTest {
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(request)))
                         .andExpect(status().isCreated())
                         .andReturn())
 
-        mvc.perform(get('/role/{id}', role.id))
+        mvc.perform(get('/role/{id}', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isOk())
 
-        mvc.perform(delete('/role/{id}', role.id))
+        mvc.perform(delete('/role/{id}', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('id').exists())
                 .andExpect(jsonPath('created').doesNotExist())
@@ -181,7 +194,8 @@ class SecurityRoleTests extends BaseTest {
                 .andExpect(jsonPath('code', is('administrator')))
                 .andDo(document())
 
-        mvc.perform(get('/role/{id}', role.id))
+        mvc.perform(get('/role/{id}', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isNotFound())
     }
 
@@ -195,6 +209,7 @@ class SecurityRoleTests extends BaseTest {
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(request)))
                         .andExpect(status().isCreated())
                         .andReturn())
@@ -205,9 +220,11 @@ class SecurityRoleTests extends BaseTest {
         ]
 
         mvc.perform(put('/role/{id}', role.id)
+                .with(bearer(token))
                 .content(toJson(update)))
 
-        mvc.perform(get('/role/{id}/audit', role.id))
+        mvc.perform(get('/role/{id}/audit', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('totalElements', is(2)))
                 .andExpect(jsonPath('numberOfElements', is(2)))

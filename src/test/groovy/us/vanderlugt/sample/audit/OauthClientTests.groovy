@@ -46,6 +46,7 @@ class OauthClientTests extends BaseTest {
                 grantTypes    : ['password']
         ]
         mvc.perform(post('/oauth/client')
+                .with(bearer(token))
                 .content(toJson(request)))
            .andExpect(status().isCreated())
            .andExpect(jsonPath('id').exists())
@@ -69,10 +70,12 @@ class OauthClientTests extends BaseTest {
         ]
         def client = parseJson(
                 mvc.perform(post('/oauth/client')
+                        .with(bearer(token))
                         .content(toJson(request)))
                    .andReturn())
 
-        mvc.perform(get('/oauth/client/{id}', client.id))
+        mvc.perform(get('/oauth/client/{id}', client.id)
+                .with(bearer(token)))
            .andExpect(status().isOk())
            .andExpect(jsonPath('id').exists())
            .andExpect(jsonPath('created').doesNotExist())
@@ -86,7 +89,8 @@ class OauthClientTests extends BaseTest {
 
     @Test
     void getNoOauthClients() throws Exception {
-        mvc.perform(get('/oauth/client'))
+        mvc.perform(get('/oauth/client')
+                .with(bearer(token)))
            .andExpect(status().isNoContent())
     }
 
@@ -108,11 +112,13 @@ class OauthClientTests extends BaseTest {
                 ]
         ].forEach { request ->
             mvc.perform(post('/oauth/client')
+                    .with(bearer(token))
                     .content(toJson(request)))
                .andExpect(status().isCreated())
         }
 
-        mvc.perform(get('/oauth/client'))
+        mvc.perform(get('/oauth/client')
+                .with(bearer(token)))
            .andExpect(status().isOk())
            .andExpect(MockMvcResultMatchers.jsonPath('numberOfElements', is(2)))
            .andExpect(MockMvcResultMatchers.jsonPath('totalElements', is(2)))
@@ -141,10 +147,12 @@ class OauthClientTests extends BaseTest {
         ]
         def client = parseJson(
                 mvc.perform(post('/oauth/client')
+                        .with(bearer(token))
                         .content(toJson(request)))
                    .andReturn())
 
-        mvc.perform(get('/oauth/client/{id}', client.id))
+        mvc.perform(get('/oauth/client/{id}', client.id)
+                .with(bearer(token)))
            .andExpect(status().isOk())
            .andExpect(jsonPath('id').exists())
            .andExpect(jsonPath('created').doesNotExist())
@@ -162,6 +170,7 @@ class OauthClientTests extends BaseTest {
         ]
 
         mvc.perform(put('/oauth/client/{id}', client.id)
+                .with(bearer(token))
                 .content(toJson(update)))
            .andExpect(MockMvcResultMatchers.jsonPath('id', is(client.id)))
            .andExpect(jsonPath('created').doesNotExist())
@@ -173,7 +182,8 @@ class OauthClientTests extends BaseTest {
            .andExpect(jsonPath('grantTypes', containsInAnyOrder('implicit')))
            .andDo(document())
 
-        mvc.perform(get('/oauth/client/{id}', client.id))
+        mvc.perform(get('/oauth/client/{id}', client.id)
+                .with(bearer(token)))
            .andExpect(status().isOk())
            .andExpect(jsonPath('id').exists())
            .andExpect(jsonPath('created').doesNotExist())
@@ -195,14 +205,17 @@ class OauthClientTests extends BaseTest {
         ]
         def client = parseJson(
                 mvc.perform(post('/oauth/client')
+                        .with(bearer(token))
                         .content(toJson(request)))
                    .andExpect(status().isCreated())
                    .andReturn())
 
-        mvc.perform(get('/oauth/client/{id}', client.id))
+        mvc.perform(get('/oauth/client/{id}', client.id)
+                .with(bearer(token)))
            .andExpect(status().isOk())
 
-        mvc.perform(delete('/oauth/client/{id}', client.id))
+        mvc.perform(delete('/oauth/client/{id}', client.id)
+                .with(bearer(token)))
            .andExpect(status().isOk())
            .andExpect(jsonPath('id').exists())
            .andExpect(jsonPath('created').doesNotExist())
@@ -213,7 +226,8 @@ class OauthClientTests extends BaseTest {
            .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
            .andDo(document())
 
-        mvc.perform(get('/oauth/client/{id}', client.id))
+        mvc.perform(get('/oauth/client/{id}', client.id)
+                .with(bearer(token)))
            .andExpect(status().isNotFound())
     }
 
@@ -229,6 +243,7 @@ class OauthClientTests extends BaseTest {
         ]
         def client = parseJson(
                 mvc.perform(post('/oauth/client')
+                        .with(bearer(token))
                         .content(toJson(request)))
                    .andExpect(status().isCreated())
                    .andReturn())
@@ -241,9 +256,11 @@ class OauthClientTests extends BaseTest {
         ]
 
         mvc.perform(put('/oauth/client/{id}', client.id)
+                .with(bearer(token))
                 .content(toJson(update)))
 
-        mvc.perform(get('/oauth/client/{id}/audit', client.id))
+        mvc.perform(get('/oauth/client/{id}/audit', client.id)
+                .with(bearer(token)))
            .andExpect(status().isOk())
            .andExpect(jsonPath('totalElements', is(2)))
            .andExpect(jsonPath('numberOfElements', is(2)))

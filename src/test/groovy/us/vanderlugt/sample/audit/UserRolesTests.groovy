@@ -45,24 +45,27 @@ class UserRolesTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(userRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         def roleRequest = [name: 'Administrator', code: 'ADMINISTRATOR']
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(roleRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(post('/user/{id}/role', user.id)
+                .with(bearer(token))
                 .content(toJson(role.id)))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('$').isArray())
-           .andExpect(jsonPath('$[*].id', containsInAnyOrder(role.id)))
-           .andExpect(jsonPath('$[*].name', containsInAnyOrder('Administrator')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$').isArray())
+                .andExpect(jsonPath('$[*].id', containsInAnyOrder(role.id)))
+                .andExpect(jsonPath('$[*].name', containsInAnyOrder('Administrator')))
+                .andDo(document())
     }
 
     @Test
@@ -77,14 +80,16 @@ class UserRolesTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(request)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         request = UUID.randomUUID()
         mvc.perform(post('/user/{id}/role', user.id)
+                .with(bearer(token))
                 .content(toJson(request)))
-           .andExpect(status().isNotFound())
+                .andExpect(status().isNotFound())
     }
 
     @Test
@@ -99,38 +104,44 @@ class UserRolesTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(userRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         def roleRequest = [name: 'Administrator', code: 'ADMINISTRATOR']
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(roleRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(post('/user/{id}/role', user.id)
+                .with(bearer(token))
                 .content(toJson(role.id)))
-           .andExpect(status().isOk())
+                .andExpect(status().isOk())
 
         roleRequest = [name: 'Manager', code: 'MANAGER']
         def role2 = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(roleRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(post('/user/{id}/role', user.id)
+                .with(bearer(token))
                 .content(toJson(role2.id)))
-           .andExpect(status().isOk())
+                .andExpect(status().isOk())
 
-        mvc.perform(get('/user/{id}/role', user.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('$').isArray())
-           .andExpect(jsonPath('$[*].id', containsInAnyOrder(role.id, role2.id)))
-           .andExpect(jsonPath('$[*].name', containsInAnyOrder('Administrator', 'Manager')))
-           .andDo(document())
+        mvc.perform(get('/user/{id}/role', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$').isArray())
+                .andExpect(jsonPath('$[*].id', containsInAnyOrder(role.id, role2.id)))
+                .andExpect(jsonPath('$[*].name', containsInAnyOrder('Administrator', 'Manager')))
+                .andDo(document())
     }
 
     @Test
@@ -145,33 +156,39 @@ class UserRolesTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(userRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         def roleRequest = [name: 'Administrator', code: 'ADMINISTRATOR']
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(roleRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(post('/user/{id}/role', user.id)
+                .with(bearer(token))
                 .content(toJson(role.id)))
-           .andExpect(status().isOk())
+                .andExpect(status().isOk())
 
-        mvc.perform(get('/user/{id}/role', user.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('$').isArray())
-           .andExpect(jsonPath('$[*].id', containsInAnyOrder(role.id)))
-           .andExpect(jsonPath('$[*].name', containsInAnyOrder('Administrator')))
+        mvc.perform(get('/user/{id}/role', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$').isArray())
+                .andExpect(jsonPath('$[*].id', containsInAnyOrder(role.id)))
+                .andExpect(jsonPath('$[*].name', containsInAnyOrder('Administrator')))
 
-        mvc.perform(delete('/user/{userId}/role/{roleId}', user.id, role.id))
-           .andExpect(status().isNoContent())
-           .andDo(document())
+        mvc.perform(delete('/user/{userId}/role/{roleId}', user.id, role.id)
+                .with(bearer(token)))
+                .andExpect(status().isNoContent())
+                .andDo(document())
 
-        mvc.perform(get('/user/{id}/role', user.id))
-           .andExpect(status().isNoContent())
+        mvc.perform(get('/user/{id}/role', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isNoContent())
     }
 
     @Test
@@ -186,58 +203,67 @@ class UserRolesTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(userRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         def roleRequest = [name: 'Administrator', code: 'ADMINISTRATOR']
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(roleRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
         mvc.perform(post('/user/{id}/role', user.id)
+                .with(bearer(token))
                 .content(toJson(role.id)))
-           .andExpect(status().isOk())
+                .andExpect(status().isOk())
 
 
         roleRequest = [name: 'Manager', code: 'MANAGER']
         def role2 = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(roleRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
         mvc.perform(post('/user/{id}/role', user.id)
+                .with(bearer(token))
                 .content(toJson(role2.id)))
-           .andExpect(status().isOk())
+                .andExpect(status().isOk())
 
 
         roleRequest = [name: 'sudoers', code: 'SUDOERS']
         def role3 = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(roleRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         roleRequest = [name: 'minions', code: 'MINIONS']
         def role4 = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(roleRequest)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(put('/user/{id}/role', user.id)
+                .with(bearer(token))
                 .content(toJson([role3.id, role4.id])))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('$').isArray())
-           .andExpect(jsonPath('$[*].id', containsInAnyOrder(role3.id, role4.id)))
-           .andExpect(jsonPath('$[*].name', containsInAnyOrder('sudoers', 'minions')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$').isArray())
+                .andExpect(jsonPath('$[*].id', containsInAnyOrder(role3.id, role4.id)))
+                .andExpect(jsonPath('$[*].name', containsInAnyOrder('sudoers', 'minions')))
+                .andDo(document())
 
-        mvc.perform(get('/user/{id}/role', user.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('$').isArray())
-           .andExpect(jsonPath('$[*].id', containsInAnyOrder(role3.id, role4.id)))
-           .andExpect(jsonPath('$[*].name', containsInAnyOrder('sudoers', 'minions')))
+        mvc.perform(get('/user/{id}/role', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$').isArray())
+                .andExpect(jsonPath('$[*].id', containsInAnyOrder(role3.id, role4.id)))
+                .andExpect(jsonPath('$[*].name', containsInAnyOrder('sudoers', 'minions')))
     }
 }

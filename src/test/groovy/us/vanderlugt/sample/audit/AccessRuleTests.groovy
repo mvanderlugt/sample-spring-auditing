@@ -47,6 +47,7 @@ class AccessRuleTests extends BaseTest {
 
         role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(role)))
                         .andExpect(status().isCreated())
                         .andReturn())
@@ -56,6 +57,7 @@ class AccessRuleTests extends BaseTest {
                 description: 'Ability to create new users in the system'
         ]
         mvc.perform(post('/role/{id}/rule', role.id)
+                .with(bearer(token))
                 .content(toJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath('$').isArray())
@@ -80,6 +82,7 @@ class AccessRuleTests extends BaseTest {
 
         role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(role)))
                         .andExpect(status().isCreated())
                         .andReturn())
@@ -89,10 +92,12 @@ class AccessRuleTests extends BaseTest {
                 description: 'Ability to create new users in the system'
         ]
         mvc.perform(post('/role/{id}/rule', role.id)
+                .with(bearer(token))
                 .content(toJson(request)))
                 .andExpect(status().isCreated())
 
-        mvc.perform(get('/role/{id}/rule', role.id))
+        mvc.perform(get('/role/{id}/rule', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$').isArray())
                 .andExpect(jsonPath('$[0].id').exists())
@@ -116,11 +121,13 @@ class AccessRuleTests extends BaseTest {
 
         role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(role)))
                         .andExpect(status().isCreated())
                         .andReturn())
 
-        mvc.perform(get('/role/{id}/rule', role.id))
+        mvc.perform(get('/role/{id}/rule', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isNoContent())
     }
 
@@ -134,6 +141,7 @@ class AccessRuleTests extends BaseTest {
 
         role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(role)))
                         .andExpect(status().isCreated())
                         .andReturn())
@@ -144,6 +152,7 @@ class AccessRuleTests extends BaseTest {
         ]
         def rules = parseJson(
                 mvc.perform(post('/role/{id}/rule', role.id)
+                        .with(bearer(token))
                         .content(toJson(request)))
                         .andExpect(status().isCreated())
                         .andReturn())
@@ -153,6 +162,7 @@ class AccessRuleTests extends BaseTest {
                 description: 'Ability to create new users'
         ]
         mvc.perform(put('/role/{roleId}/rule/{ruleId}', role.id, rules[0].id)
+                .with(bearer(token))
                 .content(toJson(update)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$').isArray())
@@ -177,6 +187,7 @@ class AccessRuleTests extends BaseTest {
 
         role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(role)))
                         .andExpect(status().isCreated())
                         .andReturn())
@@ -187,15 +198,18 @@ class AccessRuleTests extends BaseTest {
         ]
         def rules = parseJson(
                 mvc.perform(post('/role/{roleId}/rule', role.id)
+                        .with(bearer(token))
                         .content(toJson(request)))
                         .andExpect(status().isCreated())
                         .andReturn())
 
-        mvc.perform(delete('/role/{roleId}/rule/{ruleId}', role.id, rules[0].id))
+        mvc.perform(delete('/role/{roleId}/rule/{ruleId}', role.id, rules[0].id)
+                .with(bearer(token)))
                 .andExpect(status().isNoContent())
                 .andDo(document())
 
-        mvc.perform(get('/role/{id}/rule', role.id))
+        mvc.perform(get('/role/{id}/rule', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isNoContent())
     }
 
@@ -209,6 +223,7 @@ class AccessRuleTests extends BaseTest {
         ]
         def role = parseJson(
                 mvc.perform(post('/role')
+                        .with(bearer(token))
                         .content(toJson(request)))
                         .andExpect(status().isCreated())
                         .andReturn())
@@ -219,9 +234,11 @@ class AccessRuleTests extends BaseTest {
         ]
 
         mvc.perform(put('/role/{id}', role.id)
+                .with(bearer(token))
                 .content(toJson(update)))
 
-        mvc.perform(get('/role/{id}/audit', role.id))
+        mvc.perform(get('/role/{id}/audit', role.id)
+                .with(bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath('totalElements', is(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath('numberOfElements', is(2)))

@@ -33,54 +33,81 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.ResultHandler
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.RequestPostProcessor
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer
 import org.springframework.web.context.WebApplicationContext
 
+import static capital.scalable.restdocs.response.ResponseModifyingPreprocessors.limitJsonArrayLength
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup
+
 abstract class BaseTest {
     private JsonSlurper json = new JsonSlurper()
     protected MockMvc mvc
+    protected def token
 
     @BeforeEach
     void setup(WebApplicationContext context, RestDocumentationContextProvider docs) {
-        mvc = MockMvcBuilders.webAppContextSetup(context)
-                             .apply(configure(docs))
-                             .defaultRequest(defaultRequest())
-                             .alwaysDo(MockMvcResultHandlers.print())
-                             .alwaysDo(JacksonResultHandlers.prepareJackson(new ObjectMapper()))
-                             .build()
+        mvc = webAppContextSetup(context)
+                .apply(configure(docs))
+                .apply(springSecurity())
+                .defaultRequest(defaultRequest())
+                .alwaysDo(MockMvcResultHandlers.print())
+                .alwaysDo(JacksonResultHandlers.prepareJackson(new ObjectMapper()))
+                .build()
+
+        def clientId = 'TEST'
+        def clientSecret = 'H3lpM#Plz'
+        token = parseJson(
+                mvc.perform(
+                        post('/oauth/token')
+                                .param('client_id', clientId)
+                                .param('grant_type', 'client_credentials')
+                                .with(httpBasic(clientId, clientSecret)))
+                        .andExpect(status().isOk())
+                        .andReturn())
     }
 
-
     private static MockHttpServletRequestBuilder defaultRequest() {
-        MockMvcRequestBuilders.get('/')
-                              .accept(MediaType.APPLICATION_JSON_UTF8)
-                              .contentType(MediaType.APPLICATION_JSON_UTF8)
+        get('/')
+                .accept(APPLICATION_JSON_UTF8)
+                .contentType(APPLICATION_JSON_UTF8)
     }
 
     private static MockMvcConfigurer configure(RestDocumentationContextProvider docs) {
-        MockMvcRestDocumentation.documentationConfiguration(docs)
-                                .uris()
-                                .withScheme("https")
-                                .withHost("api.vanderlugt.us")
-                                .withPort(443)
-                                .and()
-                                .snippets()
-                                .withDefaults(HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse(),
-                AutoDocumentation.requestFields(), AutoDocumentation.responseFields(),
-                AutoDocumentation.pathParameters(), AutoDocumentation.requestParameters(),
-                AutoDocumentation.description(), AutoDocumentation.methodAndPath(),
-                AutoDocumentation.sectionBuilder()
-                                 .snippetNames(//AUTO_AUTHORIZATION, //todo add once security is enabled
-                        SnippetRegistry.AUTO_PATH_PARAMETERS,
-                        SnippetRegistry.AUTO_REQUEST_PARAMETERS,
-                        SnippetRegistry.AUTO_REQUEST_FIELDS,
-                        SnippetRegistry.AUTO_RESPONSE_FIELDS,
-                        SnippetRegistry.HTTP_REQUEST,
-                        SnippetRegistry.HTTP_RESPONSE)
-                                 .skipEmpty(true)
-                                 .build())
+        documentationConfiguration(docs)
+                .uris()
+                .withScheme("https")
+                .withHost("api.vanderlugt.us")
+                .withPort(443)
+                .and()
+                .snippets()
+                .withDefaults(HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse(),
+                        AutoDocumentation.requestFields(), AutoDocumentation.responseFields(),
+                        AutoDocumentation.pathParameters(), AutoDocumentation.requestParameters(),
+                        AutoDocumentation.description(), AutoDocumentation.methodAndPath(),
+                        AutoDocumentation.sectionBuilder()
+                                .snippetNames(//AUTO_AUTHORIZATION, //todo add once security is enabled
+                                        SnippetRegistry.AUTO_PATH_PARAMETERS,
+                                        SnippetRegistry.AUTO_REQUEST_PARAMETERS,
+                                        SnippetRegistry.AUTO_REQUEST_FIELDS,
+                                        SnippetRegistry.AUTO_RESPONSE_FIELDS,
+                                        SnippetRegistry.HTTP_REQUEST,
+                                        SnippetRegistry.HTTP_RESPONSE)
+                                .skipEmpty(true)
+                                .build())
     }
 
     protected static ResultHandler document() {
@@ -88,15 +115,22 @@ abstract class BaseTest {
     }
 
     protected static ResultHandler document(String identifier) {
-        MockMvcRestDocumentation.document(identifier,
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(ResponseModifyingPreprocessors.replaceBinaryContent(),
-                        ResponseModifyingPreprocessors.limitJsonArrayLength(new ObjectMapper()),
-                        Preprocessors.prettyPrint()))
+        document(identifier,
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(ResponseModifyingPreprocessors.replaceBinaryContent(),
+                        limitJsonArrayLength(new ObjectMapper()),
+                        prettyPrint()))
     }
 
 
     def parseJson(MvcResult mvcResult) {
         json.parse(mvcResult.response.contentAsByteArray)
+    }
+
+    static RequestPostProcessor bearer(Object token) {
+        { request ->
+            request.addHeader('Authorization', "Bearer ${token.access_token}")
+            return request
+        }
     }
 }

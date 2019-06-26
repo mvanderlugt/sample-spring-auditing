@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.restdocs.RestDocumentationExtension
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
@@ -45,17 +46,18 @@ class UserAccountTests extends BaseTest {
                 email    : 'MVanderLugt@live.com'
         ]
         mvc.perform(post('/user')
+                .with(bearer(token))
                 .content(toJson(request)))
-           .andExpect(status().isCreated())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('username', is('markv')))
-           .andExpect(jsonPath('password').doesNotExist())
-           .andExpect(jsonPath('firstName', is('Mark')))
-           .andExpect(jsonPath('lastName', is('Vander Lugt')))
-           .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
-           .andDo(document())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('username', is('markv')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Mark')))
+                .andExpect(jsonPath('lastName', is('Vander Lugt')))
+                .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
+                .andDo(document())
     }
 
     @Test
@@ -70,26 +72,29 @@ class UserAccountTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(request)))
-                   .andReturn())
+                        .andReturn())
 
-        mvc.perform(get('/user/{id}', user.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('username', is('mvanderlugt')))
-           .andExpect(jsonPath('password').doesNotExist())
-           .andExpect(jsonPath('firstName', is('Mark')))
-           .andExpect(jsonPath('lastName', is('Vander Lugt')))
-           .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
-           .andDo(document())
+        mvc.perform(get('/user/{id}', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('username', is('mvanderlugt')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Mark')))
+                .andExpect(jsonPath('lastName', is('Vander Lugt')))
+                .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
+                .andDo(document())
     }
 
     @Test
     void getNoUsers() throws Exception {
-        mvc.perform(get('/user'))
-           .andExpect(status().isNoContent())
+        mvc.perform(get('/user')
+                .with(bearer(token)))
+                .andExpect(status().isNoContent())
     }
 
     @Test
@@ -112,26 +117,28 @@ class UserAccountTests extends BaseTest {
                 ]
         ].forEach { request ->
             mvc.perform(post('/user')
+                    .with(bearer(token))
                     .content(toJson(request)))
-               .andExpect(status().isCreated())
+                    .andExpect(status().isCreated())
         }
 
-        mvc.perform(get('/user'))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('numberOfElements', is(2)))
-           .andExpect(jsonPath('totalElements', is(2)))
-           .andExpect(jsonPath('totalPages', is(1)))
-           .andExpect(jsonPath('number').doesNotExist()) //default values don't get serialized
-           .andExpect(jsonPath('size', is(10)))
-           .andExpect(jsonPath('content[*].id').exists())
-           .andExpect(jsonPath('content[*].created').doesNotExist())
-           .andExpect(jsonPath('content[*].modified').doesNotExist()) //todo tighten up assertions with sorting
-           .andExpect(jsonPath('content[*].username', containsInAnyOrder('mvanderlugt', 'bobbyb')))
-           .andExpect(jsonPath('content[*].password').doesNotExist())
-           .andExpect(jsonPath('content[*].firstName', containsInAnyOrder('Mark', 'Bobby')))
-           .andExpect(jsonPath('content[*].lastName', containsInAnyOrder('Vander Lugt', 'Boucher')))
-           .andExpect(jsonPath('content[*].email', containsInAnyOrder('mvanderlugt@live.com', 'bobby@snackpacks.com')))
-           .andDo(document())
+        mvc.perform(get('/user')
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('numberOfElements', is(2)))
+                .andExpect(jsonPath('totalElements', is(2)))
+                .andExpect(jsonPath('totalPages', is(1)))
+                .andExpect(jsonPath('number').doesNotExist()) //default values don't get serialized
+                .andExpect(jsonPath('size', is(10)))
+                .andExpect(jsonPath('content[*].id').exists())
+                .andExpect(jsonPath('content[*].created').doesNotExist())
+                .andExpect(jsonPath('content[*].modified').doesNotExist()) //todo tighten up assertions with sorting
+                .andExpect(jsonPath('content[*].username', containsInAnyOrder('mvanderlugt', 'bobbyb')))
+                .andExpect(jsonPath('content[*].password').doesNotExist())
+                .andExpect(jsonPath('content[*].firstName', containsInAnyOrder('Mark', 'Bobby')))
+                .andExpect(jsonPath('content[*].lastName', containsInAnyOrder('Vander Lugt', 'Boucher')))
+                .andExpect(jsonPath('content[*].email', containsInAnyOrder('mvanderlugt@live.com', 'bobby@snackpacks.com')))
+                .andDo(document())
     }
 
     @Test
@@ -146,19 +153,21 @@ class UserAccountTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(request)))
-                   .andReturn())
+                        .andReturn())
 
-        mvc.perform(get('/user/{id}', user.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('username', is('mvanderlugt')))
-           .andExpect(jsonPath('password').doesNotExist())
-           .andExpect(jsonPath('firstName', is('Mark')))
-           .andExpect(jsonPath('lastName', is('Vander Lugt')))
-           .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
+        mvc.perform(get('/user/{id}', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('username', is('mvanderlugt')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Mark')))
+                .andExpect(jsonPath('lastName', is('Vander Lugt')))
+                .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
 
         def update = [
                 username : 'bboucher',
@@ -169,27 +178,29 @@ class UserAccountTests extends BaseTest {
         ]
 
         mvc.perform(put('/user/{id}', user.id)
+                .with(bearer(token))
                 .content(toJson(update)))
-           .andExpect(jsonPath('id', is(user.id)))
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('username', is('bboucher')))
-           .andExpect(jsonPath('password').doesNotExist())
-           .andExpect(jsonPath('firstName', is('Bobby')))
-           .andExpect(jsonPath('lastName', is('Boucher')))
-           .andExpect(jsonPath('email', is('bobby@boucher.com')))
-           .andDo(document())
+                .andExpect(jsonPath('id', is(user.id)))
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('username', is('bboucher')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Bobby')))
+                .andExpect(jsonPath('lastName', is('Boucher')))
+                .andExpect(jsonPath('email', is('bobby@boucher.com')))
+                .andDo(document())
 
-        mvc.perform(get('/user/{id}', user.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('username', is('bboucher')))
-           .andExpect(jsonPath('password').doesNotExist())
-           .andExpect(jsonPath('firstName', is('Bobby')))
-           .andExpect(jsonPath('lastName', is('Boucher')))
-           .andExpect(jsonPath('email', is('bobby@boucher.com')))
+        mvc.perform(get('/user/{id}', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('username', is('bboucher')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Bobby')))
+                .andExpect(jsonPath('lastName', is('Boucher')))
+                .andExpect(jsonPath('email', is('bobby@boucher.com')))
     }
 
     @Test
@@ -204,27 +215,31 @@ class UserAccountTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(request)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
-        mvc.perform(get('/user/{id}', user.id))
-           .andExpect(status().isOk())
+        mvc.perform(get('/user/{id}', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
 
-        mvc.perform(delete('/user/{id}', user.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('username', is('mvanderlugt')))
-           .andExpect(jsonPath('password').doesNotExist())
-           .andExpect(jsonPath('firstName', is('Mark')))
-           .andExpect(jsonPath('lastName', is('Vander Lugt')))
-           .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
-           .andDo(document())
+        mvc.perform(delete('/user/{id}', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('username', is('mvanderlugt')))
+                .andExpect(jsonPath('password').doesNotExist())
+                .andExpect(jsonPath('firstName', is('Mark')))
+                .andExpect(jsonPath('lastName', is('Vander Lugt')))
+                .andExpect(jsonPath('email', is('mvanderlugt@live.com')))
+                .andDo(document())
 
-        mvc.perform(get('/user/{id}', user.id))
-           .andExpect(status().isNotFound())
+        mvc.perform(get('/user/{id}', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isNotFound())
     }
 
     @Test
@@ -240,9 +255,10 @@ class UserAccountTests extends BaseTest {
         ]
         def user = parseJson(
                 mvc.perform(post('/user')
+                        .with(bearer(token))
                         .content(toJson(request)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         def update = [
                 username : 'bboucher',
@@ -253,22 +269,24 @@ class UserAccountTests extends BaseTest {
         ]
 
         mvc.perform(put('/user/{id}', user.id)
+                .with(bearer(token))
                 .content(toJson(update)))
 
-        mvc.perform(get('/user/{id}/audit', user.id))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('totalElements', is(2)))
-           .andExpect(jsonPath('numberOfElements', is(2)))
-           .andExpect(jsonPath('content[*].id', contains(1, 2)))
-           .andExpect(jsonPath('content[*].instant').exists())
-           .andExpect(jsonPath('content[0].entity.username', is('mvanderlugt')))
-           .andExpect(jsonPath('content[1].entity.username', is('bboucher')))
-           .andExpect(jsonPath('content[0].entity.firstName', is('Mark')))
-           .andExpect(jsonPath('content[1].entity.firstName', is('Bobby')))
-           .andExpect(jsonPath('content[0].entity.lastName', is('Vander Lugt')))
-           .andExpect(jsonPath('content[1].entity.lastName', is('Boucher')))
-           .andExpect(jsonPath('content[0].entity.email', is('mvanderlugt@live.com')))
-           .andExpect(jsonPath('content[1].entity.email', is('bobby@boucher.com')))
-           .andDo(document())
+        mvc.perform(get('/user/{id}/audit', user.id)
+                .with(bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('totalElements', is(2)))
+                .andExpect(jsonPath('numberOfElements', is(2)))
+                .andExpect(jsonPath('content[*].id', contains(1, 2)))
+                .andExpect(jsonPath('content[*].instant').exists())
+                .andExpect(jsonPath('content[0].entity.username', is('mvanderlugt')))
+                .andExpect(jsonPath('content[1].entity.username', is('bboucher')))
+                .andExpect(jsonPath('content[0].entity.firstName', is('Mark')))
+                .andExpect(jsonPath('content[1].entity.firstName', is('Bobby')))
+                .andExpect(jsonPath('content[0].entity.lastName', is('Vander Lugt')))
+                .andExpect(jsonPath('content[1].entity.lastName', is('Boucher')))
+                .andExpect(jsonPath('content[0].entity.email', is('mvanderlugt@live.com')))
+                .andExpect(jsonPath('content[1].entity.email', is('bobby@boucher.com')))
+                .andDo(document())
     }
 }
