@@ -23,15 +23,15 @@ import javax.validation.constraints.Size;
 import java.util.Map;
 import java.util.Set;
 
-import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 @Data
 public class UpdateOauthClient {
-    @Size(min = 3, max = 255)
-    private String clientId;
+    @Size(min = 3, max = 100)
+    private String name;
 
     @Size(min = 8, max = 100)
-    private String clientSecret;
+    private String secret;
 
     private Set<String> resourceIds;
 
@@ -53,7 +53,7 @@ public class UpdateOauthClient {
 
     private Set<String> autoApprove;
 
-    public void setClientId(String clientId) {
-        this.clientId = lowerCase(clientId);
+    public void setName(String name) {
+        this.name = trimToNull(name);
     }
 }

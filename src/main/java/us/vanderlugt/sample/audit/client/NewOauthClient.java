@@ -26,17 +26,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Data
 public class NewOauthClient {
     @NotNull
-    @Size(min = 3, max = 255)
-    private String clientId;
+    @Size(min = 3, max = 100)
+    private String name;
 
     @NotNull
     @Size(min = 8, max = 100)
-    private String clientSecret;
+    private String secret;
 
     @NotNull
     @Size(min = 1)
@@ -69,7 +69,7 @@ public class NewOauthClient {
     @NotNull
     private Set<String> autoApprove = new HashSet<>();
 
-    public void setClientId(String clientId) {
-        this.clientId = lowerCase(clientId);
+    public void setName(String name) {
+        this.name = trimToNull(name);
     }
 }

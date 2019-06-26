@@ -34,13 +34,13 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: client_id
+                  name: name
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
                     unique: true
               - column:
-                  name: client_secret
+                  name: secret
                   type: VARCHAR(60)
                   constraints:
                     nullable: false
@@ -79,3 +79,66 @@ databaseChangeLog:
                 SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
                 FROM oauth_client
               ) WITH NO DATA;
+  - changeSet:
+      id: create_master_oauth_client
+      author: vdoroshenko@exadel.com
+      changes:
+        - insert:
+            tableName: oauth_client
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  value: 00000000-0000-0000-0000-000000000000
+              - column:
+                  name: created_by
+                  type: VARCHAR(100)
+                  value: system_init
+              - column:
+                  name: modified_by
+                  type: VARCHAR(100)
+                  value: system_init
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  value: system_init
+              - column:
+                  name: secret
+                  type: VARCHAR(60)
+                  value: $2a$10$X5LiA8LgU4JG8hNVV9WxsOBX1pWYMcXitXVyM2/WxuqWVkQdct6Rq
+              - column:
+                  name: resource_ids
+                  type: ${json}
+                  value: '["authorization"]'
+              - column:
+                  name: scope
+                  type: ${json}
+                  value: '["*"]'
+              - column:
+                  name: grant_types
+                  type: ${json}
+                  value: '["clientCredentials"]'
+              - column:
+                  name: granted_authorities
+                  type: ${json}
+                  value: '[]'
+              - column:
+                  name: redirect_uri
+                  type: ${json}
+                  value: '[]'
+              - column:
+                  name: access_token_expiration
+                  type: BIGINT
+                  value: 600 # seconds
+              - column:
+                  name: refresh_token_expiration
+                  type: BIGINT
+                  value: 0
+              - column:
+                  name: additional_information
+                  type: ${json}
+                  value: '{}'
+              - column:
+                  name: auto_approve
+                  type: ${json}
+                  value: '["*"]'

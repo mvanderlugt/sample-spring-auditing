@@ -37,7 +37,7 @@ import javax.validation.constraints.Min;
 @EnableConfigurationProperties
 @EnableJpaRepositories(repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 public class SpringAuditingApplication {
-    @Value("${password.strength:10}")
+    @Value("${password.strength:15}")
     @Min(10) @Max(31)
     private Integer passwordStrength;
 

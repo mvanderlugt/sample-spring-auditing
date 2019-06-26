@@ -25,7 +25,7 @@ import us.vanderlugt.sample.audit.common.Password;
 
 @Mapper(config = MapperConfiguration.class)
 interface OauthClientMapper {
-    @Mapping(source = "clientSecret", target = "clientSecret", qualifiedBy = Password.class)
+    @Mapping(source = "secret", target = "secret", qualifiedBy = Password.class)
     OauthClient create(NewOauthClient newAccount);
 
     @InheritConfiguration

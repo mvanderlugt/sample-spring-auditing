@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 enum GrantType {
+    clientCredentials("client_credentials"),
     password("password"),
     refreshToken("refresh_token"),
     authorizationCode("authorization_code"),

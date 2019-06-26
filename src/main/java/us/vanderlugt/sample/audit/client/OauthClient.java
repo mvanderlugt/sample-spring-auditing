@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,23 +39,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.lowerCase;
-
 @Data
 @Entity
 @Audited
 @EqualsAndHashCode(callSuper = false)
-@JsonPropertyOrder({"id", "clientId", "clientSecret", "resourceIds", "grantTypes", "scope", "authorities",
+@JsonPropertyOrder({"id", "name", "secret", "resourceIds", "grantTypes", "scope", "authorities",
         "accessTokenExpiration", "refreshTokenExpiration", "additionalInformation", "autoApprove", "redirectUri"})
 public class OauthClient extends BaseEntity implements ClientDetails {
     @NotNull
     @Size(min = 3, max = 100)
-    private String clientId;
+    private String name;
 
     @NotNull
     @JsonIgnore
     @Size(max = 100)
-    private String clientSecret;
+    private String secret;
 
     @NotNull
     @Convert(converter = JsonSetConverter.class)
@@ -94,16 +91,31 @@ public class OauthClient extends BaseEntity implements ClientDetails {
     private Set<String> autoApprove;
 
     @Override
+    @JsonIgnore
+    public String getClientId() {
+        return getId().toString();
+    }
+
+    @Override
+    @JsonIgnore
     public boolean isSecretRequired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
+    public String getClientSecret() {
+        return getSecret();
+    }
+
+    @Override
+    @JsonIgnore
     public boolean isScoped() {
         return !getScope().isEmpty();
     }
 
     @Override
+    @JsonIgnore
     public Set<String> getAuthorizedGrantTypes() {
         return getGrantTypes().stream()
                 .map(GrantType::getCode)
@@ -111,11 +123,13 @@ public class OauthClient extends BaseEntity implements ClientDetails {
     }
 
     @Override
+    @JsonIgnore
     public Set<String> getRegisteredRedirectUri() {
         return getRedirectUri();
     }
 
     @Override
+    @JsonIgnore
     public Collection<GrantedAuthority> getAuthorities() {
         return getGrantedAuthorities().stream()
                 .map(SimpleGrantedAuthority::new)
@@ -123,11 +137,13 @@ public class OauthClient extends BaseEntity implements ClientDetails {
     }
 
     @Override
+    @JsonIgnore
     public Integer getAccessTokenValiditySeconds() {
         return getAccessTokenExpiration();
     }
 
     @Override
+    @JsonIgnore
     public Integer getRefreshTokenValiditySeconds() {
         return getRefreshTokenExpiration();
     }
@@ -139,9 +155,5 @@ public class OauthClient extends BaseEntity implements ClientDetails {
             autoApproveScope = autoApprove.contains(scope);
         }
         return autoApproveScope;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = lowerCase(clientId);
     }
 }

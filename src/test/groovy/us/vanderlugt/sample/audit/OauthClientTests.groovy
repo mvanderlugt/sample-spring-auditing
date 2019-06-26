@@ -40,58 +40,51 @@ class OauthClientTests extends BaseTest {
     @Transactional
     void createOauthClient() throws Exception {
         def request = [
-                clientId : 'test_client',
-                clientSecret : 'Password1',
-                resourceIds: ['authorization'],
-                grantTypes    : ['password']
+                name    : 'test_client',
+                secret: 'Password1',
+                resourceIds : ['authorization'],
+                grantTypes  : ['password']
         ]
         mvc.perform(post('/oauth/client')
                 .with(bearer(token))
                 .content(toJson(request)))
-           .andExpect(status().isCreated())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('clientId', is('test_client')))
-           .andExpect(jsonPath('clientSecret').doesNotExist())
-           .andExpect(jsonPath('resourceIds', containsInAnyOrder('authorization')))
-           .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
-           .andDo(document())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('test_client')))
+                .andExpect(jsonPath('secret').doesNotExist())
+                .andExpect(jsonPath('resourceIds', containsInAnyOrder('authorization')))
+                .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
+                .andDo(document())
     }
 
     @Test
     @Transactional
     void getOauthClient() throws Exception {
         def request = [
-                clientId : 'TEST_CLIENT',
-                clientSecret : 'Password1',
-                resourceIds: ['authorization'],
-                grantTypes    : ['password']
+                name    : 'TEST_CLIENT',
+                secret: 'Password1',
+                resourceIds : ['authorization'],
+                grantTypes  : ['password']
         ]
         def client = parseJson(
                 mvc.perform(post('/oauth/client')
                         .with(bearer(token))
                         .content(toJson(request)))
-                   .andReturn())
+                        .andReturn())
 
         mvc.perform(get('/oauth/client/{id}', client.id)
                 .with(bearer(token)))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('clientId', is('test_client')))
-           .andExpect(jsonPath('clientSecret').doesNotExist())
-           .andExpect(jsonPath('resourceIds', containsInAnyOrder('authorization')))
-           .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
-           .andDo(document())
-    }
-
-    @Test
-    void getNoOauthClients() throws Exception {
-        mvc.perform(get('/oauth/client')
-                .with(bearer(token)))
-           .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('TEST_CLIENT')))
+                .andExpect(jsonPath('secret').doesNotExist())
+                .andExpect(jsonPath('resourceIds', containsInAnyOrder('authorization')))
+                .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
+                .andDo(document())
     }
 
     @Test
@@ -99,136 +92,136 @@ class OauthClientTests extends BaseTest {
     void getOauthClients() throws Exception {
         [
                 [
-                        clientId : 'TEST_CLIENT',
-                        clientSecret : 'Password1',
-                        resourceIds: ['authorization'],
-                        grantTypes    : ['password']
+                        name    : 'test_client',
+                        secret: 'Password1',
+                        resourceIds : ['world'],
+                        grantTypes  : ['password']
                 ],
                 [
-                        clientId : 'ANOTHER_CLIENT',
-                        clientSecret : 'Password17',
-                        resourceIds: ['organization'],
-                        grantTypes    : ['implicit']
+                        name    : 'another_client',
+                        secret: 'Password17',
+                        resourceIds : ['organization'],
+                        grantTypes  : ['implicit']
                 ]
         ].forEach { request ->
             mvc.perform(post('/oauth/client')
                     .with(bearer(token))
                     .content(toJson(request)))
-               .andExpect(status().isCreated())
+                    .andExpect(status().isCreated())
         }
 
         mvc.perform(get('/oauth/client')
                 .with(bearer(token)))
-           .andExpect(status().isOk())
-           .andExpect(MockMvcResultMatchers.jsonPath('numberOfElements', is(2)))
-           .andExpect(MockMvcResultMatchers.jsonPath('totalElements', is(2)))
-           .andExpect(MockMvcResultMatchers.jsonPath('totalPages', is(1)))
-           .andExpect(jsonPath('number').doesNotExist()) //default values don't get serialized
-           .andExpect(MockMvcResultMatchers.jsonPath('size', is(10)))
-           .andExpect(jsonPath('content[*].id').exists())
-           .andExpect(jsonPath('content[*].created').doesNotExist())
-           .andExpect(jsonPath('content[*].modified').doesNotExist()) //todo tighten up assertions with sorting
-           .andExpect(jsonPath('content[*].deleted').doesNotExist())
-           .andExpect(jsonPath('content[*].clientId', containsInAnyOrder('test_client', 'another_client')))
-           .andExpect(jsonPath('content[*].clientSecret').doesNotExist())
-           .andExpect(jsonPath('content[*].resourceIds[*]', containsInAnyOrder('authorization', 'organization')))
-           .andExpect(jsonPath('content[*].grantTypes[*]', containsInAnyOrder('password', 'implicit')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath('numberOfElements', is(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath('totalElements', is(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath('totalPages', is(1)))
+                .andExpect(jsonPath('number').doesNotExist()) //default values don't get serialized
+                .andExpect(MockMvcResultMatchers.jsonPath('size', is(10)))
+                .andExpect(jsonPath('content[*].id').exists())
+                .andExpect(jsonPath('content[*].created').doesNotExist())
+                .andExpect(jsonPath('content[*].modified').doesNotExist()) //todo tighten up assertions with sorting
+                .andExpect(jsonPath('content[*].name', containsInAnyOrder('test_client', 'another_client', 'system_init')))
+                .andExpect(jsonPath('content[*].secret').doesNotExist())
+                .andExpect(jsonPath('content[*].resourceIds[*]', containsInAnyOrder('authorization', 'organization', 'world')))
+                .andExpect(jsonPath('content[*].grantTypes[*]', containsInAnyOrder('password', 'implicit', 'clientCredentials')))
+                .andDo(document())
     }
 
     @Test
     @Transactional
     void updateOauthClient() throws Exception {
         def request = [
-                clientId : 'TEST_CLIENT',
-                clientSecret : 'Password1',
-                resourceIds: ['authorization'],
-                grantTypes    : ['password']
+                name    : 'TEST_CLIENT',
+                secret: 'Password1',
+                resourceIds : ['authorization'],
+                grantTypes  : ['password']
         ]
         def client = parseJson(
                 mvc.perform(post('/oauth/client')
                         .with(bearer(token))
                         .content(toJson(request)))
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(get('/oauth/client/{id}', client.id)
                 .with(bearer(token)))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('clientId', is('test_client')))
-           .andExpect(jsonPath('clientSecret').doesNotExist())
-           .andExpect(jsonPath('resourceIds', containsInAnyOrder('authorization')))
-           .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('TEST_CLIENT')))
+                .andExpect(jsonPath('secret').doesNotExist())
+                .andExpect(jsonPath('resourceIds', containsInAnyOrder('authorization')))
+                .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
 
         def update = [
-                clientId : 'ANOTHER_CLIENT',
-                clientSecret : 'Password17',
-                resourceIds: ['organization'],
-                grantTypes    : ['implicit']
+                name    : 'ANOTHER_CLIENT',
+                secret: 'Password17',
+                resourceIds : ['organization'],
+                grantTypes  : ['implicit']
         ]
 
         mvc.perform(put('/oauth/client/{id}', client.id)
                 .with(bearer(token))
                 .content(toJson(update)))
-           .andExpect(MockMvcResultMatchers.jsonPath('id', is(client.id)))
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('deleted').doesNotExist())
-           .andExpect(jsonPath('clientId', is('another_client')))
-           .andExpect(jsonPath('clientSecret').doesNotExist())
-           .andExpect(jsonPath('resourceIds', containsInAnyOrder('organization')))
-           .andExpect(jsonPath('grantTypes', containsInAnyOrder('implicit')))
-           .andDo(document())
+                .andExpect(MockMvcResultMatchers.jsonPath('id', is(client.id)))
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('deleted').doesNotExist())
+                .andExpect(jsonPath('name', is('ANOTHER_CLIENT')))
+                .andExpect(jsonPath('secret').doesNotExist())
+                .andExpect(jsonPath('resourceIds', containsInAnyOrder('organization')))
+                .andExpect(jsonPath('grantTypes', containsInAnyOrder('implicit')))
+                .andDo(document())
 
         mvc.perform(get('/oauth/client/{id}', client.id)
                 .with(bearer(token)))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('clientId', is('another_client')))
-           .andExpect(jsonPath('clientSecret').doesNotExist())
-           .andExpect(jsonPath('resourceIds', containsInAnyOrder('organization')))
-           .andExpect(jsonPath('grantTypes', containsInAnyOrder('implicit')))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('ANOTHER_CLIENT')))
+                .andExpect(jsonPath('secret').doesNotExist())
+                .andExpect(jsonPath('resourceIds', containsInAnyOrder('organization')))
+                .andExpect(jsonPath('grantTypes', containsInAnyOrder('implicit')))
     }
 
     @Test
     @Transactional
     void deleteOauthClient() throws Exception {
         def request = [
-                clientId : 'TEST_CLIENT',
-                clientSecret : 'Password1',
-                resourceIds: ['authorization'],
-                grantTypes    : ['password']
+                name    : 'TEST_CLIENT',
+                secret: 'Password1',
+                resourceIds : ['authorization'],
+                grantTypes  : ['password']
         ]
         def client = parseJson(
                 mvc.perform(post('/oauth/client')
                         .with(bearer(token))
                         .content(toJson(request)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         mvc.perform(get('/oauth/client/{id}', client.id)
                 .with(bearer(token)))
-           .andExpect(status().isOk())
+                .andExpect(status().isOk())
 
         mvc.perform(delete('/oauth/client/{id}', client.id)
                 .with(bearer(token)))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('id').exists())
-           .andExpect(jsonPath('created').doesNotExist())
-           .andExpect(jsonPath('modified').doesNotExist())
-           .andExpect(jsonPath('clientId', is('test_client')))
-           .andExpect(jsonPath('clientSecret').doesNotExist())
-           .andExpect(jsonPath('resourceIds', containsInAnyOrder('authorization')))
-           .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('id').exists())
+                .andExpect(jsonPath('created').doesNotExist())
+                .andExpect(jsonPath('modified').doesNotExist())
+                .andExpect(jsonPath('name', is('TEST_CLIENT')))
+                .andExpect(jsonPath('secret').doesNotExist())
+                .andExpect(jsonPath('resourceIds', containsInAnyOrder('authorization')))
+                .andExpect(jsonPath('grantTypes', containsInAnyOrder('password')))
+                .andDo(document())
 
         mvc.perform(get('/oauth/client/{id}', client.id)
                 .with(bearer(token)))
-           .andExpect(status().isNotFound())
+                .andExpect(status().isNotFound())
     }
 
     @Test
@@ -236,23 +229,23 @@ class OauthClientTests extends BaseTest {
     // envers writes data when the transaction closes, instead of rolling back flush the context afterwards to reset the database
     void auditOauthClient() throws Exception {
         def request = [
-                clientId : 'TEST_CLIENT',
-                clientSecret : 'Password1',
-                resourceIds: ['authorization'],
-                grantTypes    : ['password']
+                name    : 'TEST_CLIENT',
+                secret: 'Password1',
+                resourceIds : ['authorization'],
+                grantTypes  : ['password']
         ]
         def client = parseJson(
                 mvc.perform(post('/oauth/client')
                         .with(bearer(token))
                         .content(toJson(request)))
-                   .andExpect(status().isCreated())
-                   .andReturn())
+                        .andExpect(status().isCreated())
+                        .andReturn())
 
         def update = [
-                clientId : 'ANOTHER_CLIENT',
-                clientSecret : 'Password17',
-                resourceIds: ['organization'],
-                grantTypes    : ['implicit']
+                name    : 'ANOTHER_CLIENT',
+                secret: 'Password17',
+                resourceIds : ['organization'],
+                grantTypes  : ['implicit']
         ]
 
         mvc.perform(put('/oauth/client/{id}', client.id)
@@ -261,17 +254,17 @@ class OauthClientTests extends BaseTest {
 
         mvc.perform(get('/oauth/client/{id}/audit', client.id)
                 .with(bearer(token)))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath('totalElements', is(2)))
-           .andExpect(jsonPath('numberOfElements', is(2)))
-           .andExpect(jsonPath('content[*].id', contains(1, 2)))
-           .andExpect(jsonPath('content[*].instant').exists())
-           .andExpect(jsonPath('content[0].entity.clientId', is('test_client')))
-           .andExpect(jsonPath('content[1].entity.clientId', is('another_client')))
-           .andExpect(jsonPath('content[0].entity.resourceIds[*]', containsInAnyOrder('authorization')))
-           .andExpect(jsonPath('content[1].entity.resourceIds[*]', containsInAnyOrder('organization')))
-           .andExpect(jsonPath('content[0].entity.grantTypes[*]', containsInAnyOrder('password')))
-           .andExpect(jsonPath('content[1].entity.grantTypes[*]', containsInAnyOrder('implicit')))
-           .andDo(document())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('totalElements', is(2)))
+                .andExpect(jsonPath('numberOfElements', is(2)))
+                .andExpect(jsonPath('content[*].id', contains(1, 2)))
+                .andExpect(jsonPath('content[*].instant').exists())
+                .andExpect(jsonPath('content[0].entity.name', is('TEST_CLIENT')))
+                .andExpect(jsonPath('content[1].entity.name', is('ANOTHER_CLIENT')))
+                .andExpect(jsonPath('content[0].entity.resourceIds[*]', containsInAnyOrder('authorization')))
+                .andExpect(jsonPath('content[1].entity.resourceIds[*]', containsInAnyOrder('organization')))
+                .andExpect(jsonPath('content[0].entity.grantTypes[*]', containsInAnyOrder('password')))
+                .andExpect(jsonPath('content[1].entity.grantTypes[*]', containsInAnyOrder('implicit')))
+                .andDo(document())
     }
 }

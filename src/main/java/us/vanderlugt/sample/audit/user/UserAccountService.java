@@ -39,16 +39,20 @@ public class UserAccountService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        LocalDateTime now = now(ZoneId.of("UTC"));
-        return repository.findByUsernameIgnoreCase(username)
-                .map(u -> new User(u.getUsername(), u.getPassword(),
-                        u.getDisabled() == null,
-                        u.getExpires() == null || u.getExpires().isAfter(now),
-                        u.getPasswordExpires() == null || u.getPasswordExpires().isAfter(now),
-                        u.getLocked() == null,
-                        u.getRoles().stream()
-                                .map(r -> new SimpleGrantedAuthority(r.getCode()))
-                                .collect(Collectors.toSet())))
-                .orElseThrow(() -> new UsernameNotFoundException("Unable to find user " + username));
+        try {
+            LocalDateTime now = now(ZoneId.of("UTC"));
+            return repository.findByUsernameIgnoreCase(username)
+                    .map(u -> new User(u.getUsername(), u.getPassword(),
+                            u.getDisabled() == null,
+                            u.getExpires() == null || u.getExpires().isAfter(now),
+                            u.getPasswordExpires() == null || u.getPasswordExpires().isAfter(now),
+                            u.getLocked() == null,
+                            u.getRoles().stream()
+                                    .map(r -> new SimpleGrantedAuthority(r.getCode()))
+                                    .collect(Collectors.toSet())))
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
+        } catch(Exception exception) {
+            throw new UsernameNotFoundException("Unable to find user " + username);
+        }
     }
 }

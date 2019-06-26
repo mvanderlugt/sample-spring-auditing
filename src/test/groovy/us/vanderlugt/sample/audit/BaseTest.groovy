@@ -68,8 +68,8 @@ abstract class BaseTest {
                 .alwaysDo(JacksonResultHandlers.prepareJackson(new ObjectMapper()))
                 .build()
 
-        def clientId = 'TEST'
-        def clientSecret = 'H3lpM#Plz'
+        def clientId = '00000000-0000-0000-0000-000000000000'
+        def clientSecret = 'o5th!6*S%SglSM9^1&&d'
         token = parseJson(
                 mvc.perform(
                         post('/oauth/token')
