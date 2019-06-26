@@ -21,25 +21,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Data
 @Audited
 @MappedSuperclass
-@EqualsAndHashCode(exclude = {"created", "modified"})
+@EqualsAndHashCode(exclude = {"created", "createdBy", "modified", "modifiedBy"})
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
     @Id

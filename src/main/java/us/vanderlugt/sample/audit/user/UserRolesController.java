@@ -24,6 +24,7 @@ import us.vanderlugt.sample.audit.common.NotFoundResponse;
 import us.vanderlugt.sample.audit.role.SecurityRole;
 import us.vanderlugt.sample.audit.role.SecurityRoleRepository;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;

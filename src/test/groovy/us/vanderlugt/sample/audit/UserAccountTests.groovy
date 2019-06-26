@@ -32,8 +32,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@SpringBootTest
-@ExtendWith([SpringExtension.class, RestDocumentationExtension.class])
 class UserAccountTests extends BaseTest {
     @Test
     @Transactional

@@ -27,9 +27,14 @@ import java.util.Optional;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "instant", "entity"})
-public class AuditRecord<T> {
+@JsonPropertyOrder({"id", "instant", "by", "entity"})
+public class AuditRecord<T extends BaseEntity> {
     private Optional<Integer> id;
     private Optional<Instant> instant;
+    private Optional<String> by;
     private T entity;
+
+    public AuditRecord(Optional<Integer> id, Optional<Instant> instant, T entity) {
+        this(id, instant, Optional.ofNullable(entity.getModifiedBy()), entity);
+    }
 }

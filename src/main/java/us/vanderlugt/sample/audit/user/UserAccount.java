@@ -31,6 +31,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static javax.persistence.FetchType.EAGER;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 @Data
@@ -57,7 +58,7 @@ public class UserAccount extends BaseEntity {
 
     @JsonIgnore
     @Size(max = 20)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = EAGER)
     @JoinTable(name = "user_account_security_roles",
             joinColumns = @JoinColumn(
                     name = "user_account_id", referencedColumnName = "id"),

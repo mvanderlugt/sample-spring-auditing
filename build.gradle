@@ -66,8 +66,8 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3' 
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime'
-    runtimeOnly 'com.h2database:h2'
-//    runtimeOnly 'org.postgresql:postgresql'
+//    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.postgresql:postgresql'
 
     jsondoclet 'capital.scalable:spring-auto-restdocs-json-doclet-jdk9:2.0.5'
 
@@ -82,7 +82,7 @@ dependencies {
 
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
-//    testRuntimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'com.h2database:h2'
 }
 
 dependencyManagement {

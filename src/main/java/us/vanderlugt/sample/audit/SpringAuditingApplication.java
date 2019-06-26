@@ -27,6 +27,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -34,6 +35,7 @@ import javax.validation.constraints.Min;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableSpringDataWebSupport
+@EnableTransactionManagement
 @EnableConfigurationProperties
 @EnableJpaRepositories(repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 public class SpringAuditingApplication {

@@ -2,26 +2,26 @@ databaseChangeLog:
   - property:
       name: json
       value: JSONB
-      dbms: postgres
+      dbms: postgresql
   - property:
       name: json
       value: TEXT
       dbms: h2
   - changeSet:
-      id: setup_hibernate_envers
+      id: setup_envers
       author: mvanderlugt@live.com
       changes:
         - createTable:
-            tableName: revinfo
+            tableName: audit
             columns:
               - column:
-                  name: rev
+                  name: id
                   type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
-                  name: revtstmp
+                  name: instant
                   type: BIGINT
   - include:
       file: db.security-role.yaml

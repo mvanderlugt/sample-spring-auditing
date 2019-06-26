@@ -76,7 +76,7 @@ databaseChangeLog:
         - sql:
             sql: >-
               CREATE TABLE oauth_client_audit AS (
-                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                SELECT CAST(0 AS BIGINT) AS AUDIT_ID, CAST(0 AS BIGINT) AS AUDIT_TYPE, *
                 FROM oauth_client
               ) WITH NO DATA;
   - changeSet:

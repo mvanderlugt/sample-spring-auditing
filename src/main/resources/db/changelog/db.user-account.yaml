@@ -68,7 +68,7 @@ databaseChangeLog:
         - sql:
             sql: >-
               CREATE TABLE user_account_audit AS (
-                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                SELECT CAST(0 AS BIGINT) AS AUDIT_ID, CAST(0 AS BIGINT) AS AUDIT_TYPE, *
                 FROM user_account
               ) WITH NO DATA;
   - changeSet:
@@ -95,6 +95,6 @@ databaseChangeLog:
         - sql:
             sql: >-
               CREATE TABLE user_account_security_roles_audit AS (
-                SELECT CAST(0 AS BIGINT) AS REVISION, CAST(0 AS BIGINT) AS REVISION_TYPE, *
+                SELECT CAST(0 AS BIGINT) AS AUDIT_ID, CAST(0 AS BIGINT) AS AUDIT_TYPE, *
                 FROM user_account_security_roles
                 ) WITH NO DATA;

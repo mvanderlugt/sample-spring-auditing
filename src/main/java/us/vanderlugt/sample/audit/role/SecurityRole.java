@@ -23,14 +23,13 @@ import org.hibernate.envers.Audited;
 import us.vanderlugt.sample.audit.common.BaseEntity;
 import us.vanderlugt.sample.audit.user.UserAccount;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
 
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 @Data
@@ -54,7 +53,8 @@ public class SecurityRole extends BaseEntity {
     @OneToMany(
             mappedBy = "role",
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = LAZY
     )
     private Set<AccessRule> rules = new HashSet<>();
 

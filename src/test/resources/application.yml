@@ -1,11 +1,7 @@
-server.port: 8080
+server.port: 0
 spring:
-  profiles:
-    include: default
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: mark
-    password: H3lpM#Plz
+    url: jdbc:h2:mem:spring-auditing
   jpa:
     open-in-view: false
     properties:
